@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c0b0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Caixa">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icone.png">
+<link rel="icon" href="icone.png">
+<title>Caixa do Lucas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* Layout: coluna única de painel, resumo no topo, gráfico clicável, lançamento rápido, detalhe do mês por categoria */
+:root{
+  --bg:#0c0b0a; --panel:#151412; --panel2:#1c1a17; --line:#2a2723; --fg:#efe9df; --mute:#958d80;
+  --accent:#c9a96e; --accent-ink:#1a150c; --in:#e8e2d6;
+  --good:#6fbf8e; --warn:#e0b25a; --bad:#e2735f;
+  --display:"Instrument Serif", Georgia, serif; --body:"Geist", system-ui, -apple-system, sans-serif; --mono:"Geist Mono", ui-monospace, monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  --bg:#f6f3ee; --panel:#fffdf9; --panel2:#f0ebe3; --line:#e2dbd0; --fg:#1b1814; --mute:#7a7266;
+  --accent:#8f6b2c; --accent-ink:#fffaf0; --in:#2b2620; --good:#2f8a55; --warn:#a8741a; --bad:#bf4630; color-scheme:light } }
+:root[data-theme="light"]{
+  --bg:#f6f3ee; --panel:#fffdf9; --panel2:#f0ebe3; --line:#e2dbd0; --fg:#1b1814; --mute:#7a7266;
+  --accent:#8f6b2c; --accent-ink:#fffaf0; --in:#2b2620; --good:#2f8a55; --warn:#a8741a; --bad:#bf4630; color-scheme:light }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--body);margin:0}
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:28px 80px;display:flex;flex-direction:column;gap:22px}
+.num{font-variant-numeric:tabular-nums;font-family:var(--mono)}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px}
+h1{font:400 44px/1 var(--display);margin:0;letter-spacing:-.01em}
+h1 em{color:var(--accent)}
+.sub{color:var(--mute);font-size:13px;margin-top:6px}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+button{font:inherit;color:inherit;cursor:pointer}
+.chip{background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.chip:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.months{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.months .chip{flex:0 0 auto;min-width:52px;font-family:var(--mono);font-size:12px}
+.months .chip.has{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.kpi{background:var(--panel);padding:16px 16px 14px;min-width:0}
+.kpi .v{font:500 22px/1.2 var(--mono);font-variant-numeric:tabular-nums;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi .d{font-size:12px;color:var(--mute);margin-top:4px}
+.kpi.saldo .v{color:var(--good)} .kpi.saldo.neg .v{color:var(--bad)}
+@media (max-width:640px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))} h1{font-size:36px}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+.card h2{font:400 26px/1.1 var(--display);margin:0}
+.cardhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--mute)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+svg text{fill:var(--mute);font-family:var(--mono);font-size:11px}
+.bar-r{fill:var(--in);opacity:.85} .bar-d{fill:var(--accent)}
+.mgroup{cursor:pointer} .mgroup:hover .hit{fill:var(--panel2)} .mgroup.sel .hit{fill:var(--panel2)}
+.mgroup.sel text.ml{fill:var(--fg);font-weight:600}
+.row2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:22px}
+@media (max-width:760px){.row2{grid-template-columns:1fr}}
+form.quick{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,.8fr);gap:8px}
+form.quick .actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:480px){form.quick{grid-template-columns:1fr 1fr} form.quick .f-item{grid-column:1/-1}}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--mute);letter-spacing:.06em;text-transform:uppercase;min-width:0}
+input,select{background:var(--panel2);border:1px solid var(--line);border-radius:9px;color:var(--fg);padding:9px 10px;font:14px var(--body);width:100%;min-width:0}
+input.money{font-family:var(--mono);text-align:right}
+.btn{border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:9px 14px;font-size:13px;font-weight:500}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 50%,var(--line))}
+.caixa{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:22px;align-items:center}
+@media (max-width:640px){.caixa{grid-template-columns:1fr}}
+.caixa .big{font:500 34px/1.1 var(--mono);font-variant-numeric:tabular-nums;color:var(--good);margin-top:4px}
+.caixa .small{font-size:12px;color:var(--mute);margin-top:6px}
+.goal{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;font-size:13px}
+.goal+.goal{margin-top:14px}
+.goal .track{grid-column:1/-1;height:8px;background:var(--panel2);border-radius:5px;overflow:hidden}
+.goal .fill{height:100%;background:var(--good);border-radius:5px}
+.goal .val{font-family:var(--mono);font-size:12px;color:var(--mute)}
+.catbars{display:flex;flex-direction:column;gap:10px}
+.cb{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;font-size:13px}
+.cb .track{grid-column:1/-1;height:6px;background:var(--panel2);border-radius:4px;overflow:hidden}
+.cb .fill{height:100%;background:var(--accent);border-radius:4px}
+.cb .val{font-family:var(--mono);font-size:12px;color:var(--mute)}
+.groups{display:flex;flex-direction:column;gap:12px}
+.group{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel)}
+.ghead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;background:var(--panel2)}
+.ghead b{font-weight:600;font-size:14px}
+.ghead .t{font-family:var(--mono);font-size:14px}
+.tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--mute);margin-left:8px}
+.item{display:grid;grid-template-columns:minmax(0,1fr) auto 128px;gap:4px 12px;padding:9px 14px;border-top:1px solid var(--line);align-items:center}
+.item .nm{background:none;border:0;padding:0;text-align:left;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .nm:hover{color:var(--accent)}
+.item input.money{padding:6px 8px;font-size:14px}
+.pay{border:1px solid var(--line);background:transparent;border-radius:999px;padding:3px 10px;font-size:11px;font-weight:600;letter-spacing:.04em;white-space:nowrap;color:var(--warn);border-color:color-mix(in srgb,var(--warn) 55%,var(--line))}
+.pay.on{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good);border-color:color-mix(in srgb,var(--good) 55%,var(--line))}
+.pay-sp{width:0}
+.cash{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px;font-size:13px;color:var(--mute)}
+.cash b{font-family:var(--mono);font-weight:500;color:var(--fg)}
+.cash .now b{color:var(--good)} .cash .now.neg b{color:var(--bad)}
+.ghead .pend{font-size:11px;color:var(--warn);margin-left:8px}
+.item .meta{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mute)}
+.item .meta .track{flex:1;height:4px;background:var(--panel2);border-radius:3px;overflow:hidden}
+.item .meta .fill{height:100%;border-radius:3px;background:var(--good)}
+.item.warn .meta .fill{background:var(--warn)} .item.over .meta .fill{background:var(--bad)}
+.item.over input.money{border-color:var(--bad);color:var(--bad)}
+.item .meta .lbl{font-family:var(--mono);white-space:nowrap}
+.editor{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr);gap:8px;padding:10px 0 4px}
+.editor .actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:480px){.editor{grid-template-columns:1fr 1fr}.editor .f-nome{grid-column:1/-1}}
+.additem{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--line)}
+.additem input{flex:1}
+.linkish{background:none;border:0;color:var(--mute);font-size:13px;padding:10px 14px;text-align:left;border-top:1px solid var(--line);width:100%}
+.linkish:hover{color:var(--accent)}
+.hist{display:flex;flex-direction:column}
+.h{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:9px 0;border-top:1px solid var(--line);font-size:13px}
+.h:first-child{border-top:0}
+.h .w{color:var(--mute);font-size:11px}
+.h .amt{font-family:var(--mono)}
+.empty{color:var(--mute);font-size:13px;padding:6px 0}
+.state{padding:40px 20px;text-align:center;color:var(--mute)}
+.state h2{font:400 30px var(--display);color:var(--fg);margin:0 0 8px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--fg);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:13px;font-weight:500;opacity:0;transition:.25s;pointer-events:none;z-index:9}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.savedot{font-size:12px;color:var(--mute);display:flex;align-items:center;gap:6px}
+.savedot i{width:7px;height:7px;border-radius:50%;background:var(--good);display:inline-block}
+.savedot.busy i{background:var(--warn)} .savedot.err i{background:var(--bad)}
+.foot{color:var(--mute);font-size:12px;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>html{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Controle financeiro pessoal</div>
+      <h1>Caixa do <em>Lucas</em></h1>
+      <div class="sub" id="sub">Carregando seus números…</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+      <div class="chips" id="years"></div>
+      <div class="savedot" id="savedot"><i></i><span>Tudo salvo</span></div>
+    </div>
+  </header>
+
+  <div id="app">
+    <div class="card state" id="loading">
+      <h2>Abrindo o caixa</h2>
+      <div>Seus lançamentos aparecem aqui assim que a conexão responder.</div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="wrap" style="padding-block:0 40px">
+  <div class="card" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between">
+    <div><div class="eyebrow">Backup</div><div class="sub" style="margin-top:4px">Seus números ficam salvos neste celular. Faça um backup de vez em quando pra não perder nada se trocar de aparelho ou limpar o navegador.</div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="exportar()">Salvar backup</button><label class="btn ghost" style="cursor:pointer">Restaurar backup<input type="file" accept="application/json,.json" style="display:none" onchange="importar(this.files[0])"></label></div>
+  </div>
+</div>
+
+<script>
+const LS_KEY="caixa-lucas-v1";
+function lsLoad(){try{return JSON.parse(localStorage.getItem(LS_KEY))||{}}catch(e){return {}}}
+function lsSave(o){localStorage.setItem(LS_KEY,JSON.stringify(o))}
+const localDb={
+  collection(){return{onSnapshot(cb){setTimeout(()=>{const all=lsLoad();cb({docs:Object.keys(all).map(id=>({id,exists:true,data:()=>all[id]}))})});return()=>{}}}},
+  doc(p){const id=p.split("/").pop();return{async set(data){const all=lsLoad();all[id]=data;lsSave(all)}}}
+};
+function exportar(){try{const blob=new Blob([JSON.stringify(lsLoad(),null,1)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="caixa-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);toast("Backup salvo")}catch(e){toast("Não deu pra salvar o backup")}}
+function importar(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o||typeof o!=="object")throw 0;lsSave(o);location.reload()}catch(e){toast("Arquivo de backup inválido")}};r.readAsText(f)}
+</script>
+<script>
+const MESES=["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
+const MESES_LONGOS=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+const GRUPOS=[
+ {id:"receitas",nome:"Receitas",tipo:"R"},
+ {id:"invest",nome:"Investimentos",tipo:"I"},
+ {id:"fixas",nome:"Fixas e essenciais",tipo:"D"},
+ {id:"trabalho",nome:"Trabalho e empresa",tipo:"D"},
+ {id:"transporte",nome:"Transporte",tipo:"D"},
+ {id:"alimentacao",nome:"Alimentação",tipo:"D"},
+ {id:"assinaturas",nome:"Assinaturas pessoais",tipo:"D"},
+ {id:"saude",nome:"Saúde e cuidado",tipo:"D"},
+ {id:"lazer",nome:"Lazer e pessoal",tipo:"D"}
+];
+const TIPO_LABEL={R:"entrada",I:"investimento",D:"despesa"};
+const brl=new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"});
+const brl0=new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
+const fmt=v=>v?brl.format(v):"R$ 0";
+const pctf=v=>(isFinite(v)?Math.round(v*100):0)+"%";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function parseMoney(s){
+  s=String(s||"").replace(/R\$|\s/g,"");
+  if(!s) return 0;
+  if(s.includes(",")) s=s.replace(/\./g,"").replace(",",".");
+  const n=parseFloat(s); return isFinite(n)?Math.round(n*100)/100:NaN;
+}
+const slug=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40)||"item";
+
+let BASE=null, db=null, anos={}, ano=null, mes=new Date().getMonth(), editing=null, confirmDel=null;
+let dirty=false, saving=false, readOnly=false;
+
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(toast._t);toast._t=setTimeout(()=>e.classList.remove("on"),1800)}
+function saveState(s){const d=$("#savedot");d.className="savedot"+(s==="busy"?" busy":s==="err"?" err":"");d.querySelector("span").textContent=s==="busy"?"Salvando…":s==="err"?"Não salvou, tente de novo":"Tudo salvo"}
+
+const cur=()=>anos[ano];
+const vals=(id)=>{const d=cur();if(!d.valores[id])d.valores[id]=Array(12).fill(0);return d.valores[id]};
+function totalGrupo(gid,m){const d=cur();return d.itens.filter(i=>i.grupo===gid).reduce((s,i)=>s+(+(d.valores[i.id]?.[m])||0),0)}
+function totalTipo(t,m){return GRUPOS.filter(g=>g.tipo===t).reduce((s,g)=>s+totalGrupo(g.id,m),0)}
+const tipoDe=id=>GRUPOS.find(g=>g.id===cur().itens.find(i=>i.id===id)?.grupo)?.tipo;
+function isPago(id,m){const p=cur().pagos?.[id]?.[m]; if(p!=null) return !!p; const hoje=new Date(); return ano<hoje.getFullYear()||(ano===hoje.getFullYear()&&m<hoje.getMonth())}
+function caixaMes(m){let rec=0,saiu=0,falta=0,aRec=0;for(const i of cur().itens){const v=+(cur().valores[i.id]?.[m])||0;if(!v)continue;const t=tipoDe(i.id),pg=isPago(i.id,m);if(t==="R"){pg?rec+=v:aRec+=v}else{pg?saiu+=v:falta+=v}}return{rec,saiu,falta,aRec}}
+const anual=(fn)=>MESES.reduce((s,_,m)=>s+fn(m),0);
+
+// ---------- persistência: um documento por ano, uma escrita por vez ----------
+let saveTimer=null; const dirtyYears=new Set();
+function scheduleSave(){dirtyYears.add(ano);dirty=true;saveState("busy");clearTimeout(saveTimer);saveTimer=setTimeout(flush,500)}
+async function flush(){
+  if(saving||!dirtyYears.size||readOnly) return;
+  saving=true;
+  const y=[...dirtyYears][0]; dirtyYears.delete(y); const d=anos[y];
+  try{
+    await db.doc(BASE+"/ano-"+y).set({ano:d.ano,itens:d.itens,valores:d.valores,pagos:d.pagos||{},caixaReal:d.caixaReal||null,hist:(d.hist||[]).slice(0,40),atualizado:new Date().toISOString()});
+    saving=false; if(dirtyYears.size) return flush(); dirty=false; saveState("ok");
+  }catch(e){
+    saving=false; dirtyYears.add(y);
+    if(e&&e.code==="invalid_argument"){readOnly=true;saveState("err");toast("Você só tem acesso de leitura aqui");render();return}
+    saveState("err"); setTimeout(flush,2500);
+  }
+}
+function log(item,m,valor,modo){
+  const d=cur(); d.hist=d.hist||[];
+  d.hist.unshift({t:new Date().toISOString(),item:item.id,nome:item.nome,mes:m,valor,modo});
+  d.hist=d.hist.slice(0,40);
+}
+
+// ---------- boot ----------
+(async()=>{
+  db=localDb; BASE="local";
+  if(!db){ $("#app").innerHTML=`<div class="card state"><h2>Sem conexão com seus dados</h2><div>Abra este painel pelo claude.ai com a sua conta pra ver e lançar os valores.</div></div>`; $("#sub").textContent="Offline"; return;}
+  db.collection(BASE).onSnapshot(snap=>{
+    const incoming={};
+    snap.docs.forEach(doc=>{const x=doc.data(); if(x&&x.ano) incoming[x.ano]=JSON.parse(JSON.stringify(x))});
+    for(const k in incoming){ if(!anos[k] || !(saving||dirtyYears.has(+k))) anos[k]=incoming[k]; }
+    for(const k in incoming){const d=anos[k]; d.valores=d.valores||{}; d.pagos=d.pagos||{}; d.itens=d.itens||[]; d.hist=d.hist||[];}
+    if(ano===null||!anos[ano]){
+      const ys=Object.keys(anos).map(Number).sort();
+      const now=new Date().getFullYear();
+      ano=ys.includes(now)?now:(ys[ys.length-1]??null);
+    }
+    safeRender();
+  },err=>{ $("#app").innerHTML=`<div class="card state"><h2>Conexão caiu</h2><div>Recarregue a página pra voltar a sincronizar.</div></div>`; });
+})();
+
+// ---------- render ----------
+let pendingRender=false;
+function safeRender(){const a=document.activeElement; if(a&&a.matches&&a.matches("#app input")&&a.value!==a.defaultValue){pendingRender=true;return} render()}
+document.addEventListener("focusout",()=>{if(pendingRender){pendingRender=false;setTimeout(render)}});
+function render(){
+  renderYears();
+  const app=$("#app");
+  if(ano===null){
+    app.innerHTML=`<div class="card state"><h2>Nenhum ano criado ainda</h2><div style="margin-bottom:14px">Crie o primeiro ano e comece a lançar.</div><button class="btn primary" data-act="novoano">Criar ${new Date().getFullYear()}</button></div>`;
+    $("#sub").textContent="Comece criando um ano";
+    return;
+  }
+  const d=cur();
+  const R=totalTipo("R",mes),I=totalTipo("I",mes),D=totalTipo("D",mes),S=R-I-D;
+  const RA=anual(m=>totalTipo("R",m)),IA=anual(m=>totalTipo("I",m)),DA=anual(m=>totalTipo("D",m)),SA=RA-IA-DA;
+  const mesesComDesp=MESES.filter((_,m)=>totalTipo("D",m)>0).length||1;
+  const upd=d.atualizado?new Date(d.atualizado):null;
+  $("#sub").textContent=`Ano ${ano} · ${fmt(SA)} de saldo livre no ano`+(upd?` · atualizado ${upd.toLocaleDateString("pt-BR")}`:"");
+
+  const focusId=document.activeElement?.id, selStart=document.activeElement?.selectionStart;
+  const quickDraft={item:$("#q-item")?.value,val:$("#q-val")?.value};
+
+  app.innerHTML=`
+  <div style="display:flex;flex-direction:column;gap:22px">
+    <div class="months" role="tablist" aria-label="Mês">
+      ${MESES.map((n,m)=>`<button class="chip ${totalTipo("R",m)+totalTipo("D",m)+totalTipo("I",m)>0?"has":""}" aria-pressed="${m===mes}" data-mes="${m}">${n}</button>`).join("")}
+    </div>
+
+    <div>
+      <div class="eyebrow" style="margin-bottom:8px">${MESES_LONGOS[mes]} de ${ano}</div>
+      <div class="kpis">
+        <div class="kpi"><div class="eyebrow">Entrou</div><div class="v">${fmt(R)}</div><div class="d">no ano ${brl0.format(RA)}</div></div>
+        <div class="kpi"><div class="eyebrow">Investiu</div><div class="v">${fmt(I)}</div><div class="d">${R?pctf(I/R)+" do que entrou":"sem receita no mês"}</div></div>
+        <div class="kpi"><div class="eyebrow">Gastou</div><div class="v">${fmt(D)}</div><div class="d">média ${brl0.format(DA/mesesComDesp)} / mês</div></div>
+        <div class="kpi saldo ${S<0?"neg":""}"><div class="eyebrow">Vai sobrar</div><div class="v">${fmt(S)}</div><div class="d">poupança do ano ${RA?pctf((IA+SA)/RA):"0%"}</div></div>
+      </div>
+      ${(()=>{const c=caixaMes(mes);const now=c.rec-c.saiu;return `<div class="cash"><span>Já pago <b>${fmt(c.saiu)}</b></span><span>Falta pagar <b>${fmt(c.falta)}</b></span>${c.aRec?`<span>A receber <b>${fmt(c.aRec)}</b></span>`:""}<span class="now ${now<0?"neg":""}">Na conta agora <b>${fmt(now)}</b></span></div>`})()}
+    </div>
+
+    ${caixaCard()}
+
+    <div class="card">
+      <div class="cardhead"><h2>O ano mês a mês</h2>
+        <div class="legend"><span><i style="background:var(--in)"></i>Entradas</span><span><i style="background:var(--accent)"></i>Despesas</span><span><i style="background:var(--good);border-radius:50%"></i>Saldo</span></div></div>
+      ${chart()}
+    </div>
+
+    <div class="row2">
+      <div class="card">
+        <div class="cardhead"><h2>Lançar</h2><span class="eyebrow">soma no mês de ${MESES[mes]}</span></div>
+        ${readOnly?`<div class="empty">Seu acesso aqui é só de leitura.</div>`:`
+        <form class="quick" id="quick">
+          <label class="f f-item">Item<select id="q-item">${GRUPOS.map(g=>`<optgroup label="${esc(g.nome)}">${d.itens.filter(i=>i.grupo===g.id).map(i=>`<option value="${esc(i.id)}">${esc(i.nome)}</option>`).join("")}</optgroup>`).join("")}</select></label>
+          <label class="f">Valor<input id="q-val" class="money" inputmode="decimal" placeholder="0,00" autocomplete="off"></label>
+          <label class="f">Mês<select id="q-mes">${MESES.map((n,m)=>`<option value="${m}" ${m===mes?"selected":""}>${n}</option>`).join("")}</select></label>
+          <div class="actions"><button class="btn primary" type="submit">Somar ao mês</button><button class="btn ghost" type="button" data-act="substituir">Substituir valor</button></div>
+        </form>`}
+      </div>
+      <div class="card">
+        <div class="cardhead"><h2>Para onde vai</h2><span class="eyebrow">despesas ${ano}</span></div>
+        ${catBars(DA)}
+      </div>
+    </div>
+
+    <div>
+      <div class="cardhead"><h2 style="font:400 30px/1.1 var(--display);margin:0">Detalhe de ${MESES_LONGOS[mes]}</h2><span class="eyebrow">toque no valor pra editar · no nome pra meta</span></div>
+      <div class="groups">${GRUPOS.map(g=>groupHtml(g)).join("")}</div>
+    </div>
+
+    <div class="card">
+      <div class="cardhead"><h2>Últimos lançamentos</h2><span class="eyebrow">${ano}</span></div>
+      <div class="hist">${(d.hist||[]).slice(0,12).map(h=>`<div class="h"><span>${esc(h.nome)} <span class="w">· ${MESES[h.mes]} · ${h.modo==="soma"?"somou":"definiu"}</span></span><span class="amt">${h.modo==="soma"?"+ ":""}${fmt(h.valor)}</span><span class="w" style="grid-column:1/-1">${new Date(h.t).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}</span></div>`).join("")||`<div class="empty">Nada lançado por aqui ainda. Use o Lançar acima.</div>`}</div>
+    </div>
+    <div class="foot">Saldo livre = entradas − investimentos − despesas. Metas são por mês.</div>
+  </div>`;
+
+  if(quickDraft.item && $("#q-item")) $("#q-item").value=quickDraft.item;
+  if(quickDraft.val && $("#q-val")) $("#q-val").value=quickDraft.val;
+  if(focusId){const el=document.getElementById(focusId); if(el){el.focus(); try{if(selStart!=null)el.setSelectionRange(selStart,selStart)}catch(_){}}}
+}
+
+function renderYears(){
+  const ys=Object.keys(anos).map(Number).sort();
+  $("#years").innerHTML=ys.map(y=>`<button class="chip" aria-pressed="${y===ano}" data-ano="${y}">${y}</button>`).join("")+(ys.length&&!readOnly?`<button class="chip" data-act="novoano" title="Criar próximo ano">+ ano</button>`:"");
+}
+
+function chart(){
+  const W=720,H=230,pl=44,pr=8,pt=12,pb=26, cw=(W-pl-pr)/12;
+  const R=MESES.map((_,m)=>totalTipo("R",m)), D=MESES.map((_,m)=>totalTipo("D",m)), S=MESES.map((_,m)=>R[m]-totalTipo("I",m)-D[m]);
+  const max=Math.max(1,...R,...D), min=Math.min(0,...S);
+  const step=niceStep((max-min)/4), top=Math.ceil(max/step)*step, bot=Math.floor(min/step)*step;
+  const y=v=>pt+(top-v)/(top-bot)*(H-pt-pb);
+  let g="";
+  for(let v=bot;v<=top+1e-9;v+=step){g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" ${v===0?'':'stroke-dasharray="2 4"'}/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end">${short(v)}</text>`}
+  const bw=Math.min(14,cw*.3);
+  MESES.forEach((n,m)=>{
+    const x=pl+m*cw;
+    g+=`<g class="mgroup ${m===mes?"sel":""}" data-mes="${m}"><rect class="hit" x="${x+1}" y="${pt}" width="${cw-2}" height="${H-pt-pb+20}" rx="6" fill="transparent"/>
+      <rect class="bar-r" x="${x+cw/2-bw-1}" y="${y(R[m])}" width="${bw}" height="${Math.max(0,y(0)-y(R[m]))}" rx="2"/>
+      <rect class="bar-d" x="${x+cw/2+1}" y="${y(D[m])}" width="${bw}" height="${Math.max(0,y(0)-y(D[m]))}" rx="2"/>
+      <text class="ml" x="${x+cw/2}" y="${H-6}" text-anchor="middle">${n}</text><title>${n}: entradas ${fmt(R[m])}, despesas ${fmt(D[m])}, saldo ${fmt(S[m])}</title></g>`;
+  });
+  const pts=S.map((v,m)=>[pl+m*cw+cw/2,y(v)]);
+  g+=`<polyline points="${pts.map(p=>p.join(",")).join(" ")}" fill="none" stroke="var(--good)" stroke-width="1.5" stroke-linejoin="round" pointer-events="none"/>`;
+  pts.forEach((p,m)=>g+=`<circle cx="${p[0]}" cy="${p[1]}" r="${m===mes?4.5:3}" fill="${S[m]<0?"var(--bad)":"var(--good)"}" stroke="var(--panel)" stroke-width="1.5" pointer-events="none"/>`);
+  return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" style="width:100%;min-width:520px;display:block" role="img" aria-label="Entradas, despesas e saldo por mês">${g}</svg></div>`;
+}
+function niceStep(r){const p=Math.pow(10,Math.floor(Math.log10(r||1)));const n=r/p;return (n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*p}
+function short(v){const a=Math.abs(v);return (v<0?"-":"")+(a>=1000?(a/1000).toLocaleString("pt-BR",{maximumFractionDigits:1})+"k":Math.round(a))}
+
+const CAIXA_ID="reserva-de-emergencia", CAIXA_META_MES=1000, META_RESERVA=10000, META_CASA=100000, TAXA_MES=0.01;
+let editCaixa=false;
+function ultimoReal(){let best=null;for(const y in anos){const r=anos[y].caixaReal;if(r&&r.data&&(!best||r.data>best.data))best=r}return best}
+function caixaCard(){
+  const hoje=new Date(), ys=Object.keys(anos).map(Number).sort(), real=ultimoReal();
+  let saldo=0, depositado=0, iniciou=false, depDepois=0;
+  if(real){ const rd=new Date(real.data); saldo=+real.valor||0;
+    for(const y of ys){ const v=anos[y].valores?.[CAIXA_ID]||[];
+      for(let m=0;m<12;m++){
+        if(y>hoje.getFullYear()||(y===hoje.getFullYear()&&m>hoje.getMonth())) break;
+        if(y<rd.getFullYear()||(y===rd.getFullYear()&&m<=rd.getMonth())) continue;
+        const dep=+v[m]||0; saldo=saldo*(1+TAXA_MES)+dep; depDepois+=dep;
+      } }
+  } else {
+    for(const y of ys){ const v=anos[y].valores?.[CAIXA_ID]||[];
+      for(let m=0;m<12;m++){
+        if(y>hoje.getFullYear()||(y===hoje.getFullYear()&&m>hoje.getMonth())) break;
+        const dep=+v[m]||0; if(dep) iniciou=true;
+        if(iniciou) saldo=saldo*(1+TAXA_MES)+dep; depositado+=dep;
+      } }
+  }
+  const nome=cur().itens.find(i=>i.id===CAIXA_ID)?.nome||"Caixinha";
+  const esteMes=+(cur().valores?.[CAIXA_ID]?.[mes])||0; const metaMes=+(cur().itens.find(i=>i.id===CAIXA_ID)?.meta)||0;
+  const g=(lbl,meta)=>`<div class="goal"><span>${lbl}</span><span class="val">${brl0.format(Math.min(saldo,meta))} de ${brl0.format(meta)} · ${pctf(Math.min(1,saldo/meta))}</span><div class="track"><div class="fill" style="width:${Math.min(100,saldo/meta*100).toFixed(1)}%"></div></div></div>`;
+  const dataTxt=real?new Date(real.data).toLocaleDateString("pt-BR"):"";
+  const label=real?(depDepois?"Saldo estimado hoje":"Saldo na caixinha"):"Saldo estimado hoje";
+  const nota=real?(depDepois?`Último valor do app: ${fmt(real.valor)} em ${dataTxt}. Somei ${fmt(depDepois)} depositados depois, com rendimento estimado.`:`Valor do app, atualizado em ${dataTxt}.`)
+    :`Você depositou ${fmt(depositado)}. Rendimento estimado de ${fmt(saldo-depositado)}, contando cerca de 1% ao mês.`;
+  const form=editCaixa&&!readOnly?`<div class="additem" style="border-top:0;padding:10px 0 0"><input id="caixa-real" class="money" inputmode="decimal" placeholder="Valor que aparece no app" autocomplete="off"><button class="btn primary" data-act="salvarcaixa">Salvar</button><button class="btn ghost" data-act="cancelarcaixa">Cancelar</button></div>`
+    :(readOnly?"":`<button class="btn ghost" data-act="editarcaixa" style="margin-top:10px">Atualizar com o valor do app</button>`);
+  return `<div class="card"><div class="cardhead"><h2>${esc(nome)}</h2><span class="eyebrow">${MESES[mes]}: ${fmt(esteMes)}${metaMes?" de "+brl0.format(metaMes):" guardado"}</span></div>
+    <div class="caixa"><div><div class="eyebrow">${label}</div><div class="big">${fmt(saldo)}</div>
+      <div class="small">${nota}</div>${form}</div>
+    <div>${g("Reserva de emergência",META_RESERVA)}</div></div></div>`;
+}
+function catBars(total){
+  const rows=GRUPOS.filter(g=>g.tipo==="D").map(g=>({g,v:anual(m=>totalGrupo(g.id,m))})).filter(r=>r.v>0).sort((a,b)=>b.v-a.v);
+  if(!rows.length) return `<div class="empty">Sem despesas lançadas em ${ano}.</div>`;
+  const mx=rows[0].v;
+  return `<div class="catbars">${rows.map(r=>`<div class="cb"><span>${esc(r.g.nome)}</span><span class="val">${brl0.format(r.v)} · ${pctf(r.v/total)}</span><div class="track"><div class="fill" style="width:${(r.v/mx*100).toFixed(1)}%"></div></div></div>`).join("")}</div>`;
+}
+
+function groupHtml(g){
+  const d=cur(), itens=d.itens.filter(i=>i.grupo===g.id), t=totalGrupo(g.id,mes);
+  return `<section class="group"><div class="ghead"><span><b>${esc(g.nome)}</b><span class="tag">${TIPO_LABEL[g.tipo]}</span>${(()=>{const n=itens.filter(i=>(+(d.valores[i.id]?.[mes])||0)&&!isPago(i.id,mes)).length;return n?`<span class="pend">${n} ${g.tipo==="R"?"a receber":"a pagar"}</span>`:""})()}</span><span class="t">${fmt(t)}</span></div>
+  ${itens.map(i=>itemHtml(i)).join("")}
+  ${readOnly?"":(editing==="new:"+g.id?`<div class="additem"><input id="new-${g.id}" placeholder="Nome do novo item" autocomplete="off"><button class="btn primary" data-act="criaritem" data-grupo="${g.id}">Adicionar</button><button class="btn ghost" data-act="cancelar">Cancelar</button></div>`:`<button class="linkish" data-act="novoitem" data-grupo="${g.id}">+ adicionar item</button>`)}
+  </section>`;
+}
+const g0=i=>GRUPOS.find(g=>g.id===i.grupo)?.tipo;
+function itemHtml(i){
+  const v=+(cur().valores[i.id]?.[mes])||0, meta=+i.meta||0, r=meta?v/meta:0;
+  const st=meta&&r>1?"over":meta&&r>=.8?"warn":"";
+  const ed=editing===i.id;
+  return `<div class="item ${st}">
+    <button class="nm" data-act="editar" data-id="${esc(i.id)}" title="Editar nome e meta">${esc(i.nome)}</button>
+    ${v?(()=>{const pg=isPago(i.id,mes),rc=g0(i)==="R";return `<button class="pay ${pg?"on":""}" data-act="pago" data-id="${esc(i.id)}" ${readOnly?"disabled":""} aria-pressed="${pg}">${pg?(rc?"✓ Recebido":"✓ Pago"):(rc?"A receber":"A pagar")}</button>`})():`<span class="pay-sp"></span>`}
+    <input class="money" id="v-${esc(i.id)}" data-id="${esc(i.id)}" inputmode="decimal" value="${v?v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}):""}" placeholder="0,00" ${readOnly?"readonly":""} autocomplete="off" aria-label="${esc(i.nome)} em ${MESES[mes]}">
+    ${meta?`<div class="meta"><div class="track"><div class="fill" style="width:${Math.min(100,r*100).toFixed(1)}%"></div></div><span class="lbl">${pctf(r)} de ${brl0.format(meta)}</span></div>`:""}
+    ${ed&&!readOnly?`<div class="editor">
+      <label class="f f-nome">Nome<input id="e-nome" value="${esc(i.nome)}" autocomplete="off"></label>
+      <label class="f">Meta / mês<input id="e-meta" class="money" inputmode="decimal" value="${meta?meta.toLocaleString("pt-BR",{minimumFractionDigits:2}):""}" placeholder="sem meta"></label>
+      <label class="f">Categoria<select id="e-grupo">${GRUPOS.map(g=>`<option value="${g.id}" ${g.id===i.grupo?"selected":""}>${esc(g.nome)}</option>`).join("")}</select></label>
+      <div class="actions"><button class="btn primary" data-act="salvaritem" data-id="${esc(i.id)}">Salvar</button><button class="btn ghost" data-act="cancelar">Cancelar</button>
+      <button class="btn danger" data-act="remover" data-id="${esc(i.id)}" style="margin-left:auto">${confirmDel===i.id?"Confirmar: apagar item e valores do ano":"Remover item"}</button></div>
+    </div>`:""}
+  </div>`;
+}
+
+// ---------- interações ----------
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-mes],[data-ano],[data-act]"); if(!b) return;
+  if(b.dataset.ano){ano=+b.dataset.ano;editing=null;render();return}
+  if(b.dataset.mes!=null&&!b.dataset.act){mes=+b.dataset.mes;editing=null;render();return}
+  const a=b.dataset.act, d=cur();
+  if(a==="novoano") return novoAno();
+  if(a==="novoitem"){editing="new:"+b.dataset.grupo;render();setTimeout(()=>$("#new-"+b.dataset.grupo)?.focus());return}
+  if(a==="cancelar"){editing=null;confirmDel=null;render();return}
+  if(a==="editar"){editing=editing===b.dataset.id?null:b.dataset.id;confirmDel=null;render();return}
+  if(a==="criaritem"){
+    const nome=($("#new-"+b.dataset.grupo)?.value||"").trim(); if(!nome) return toast("Dê um nome pro item");
+    let id=slug(nome),k=2; while(d.itens.some(i=>i.id===id)) id=slug(nome)+"-"+k++;
+    d.itens.push({id,nome,grupo:b.dataset.grupo,meta:0}); d.valores[id]=Array(12).fill(0);
+    editing=null; render(); scheduleSave(); toast("Item criado"); return;
+  }
+  if(a==="salvaritem"){
+    const it=d.itens.find(i=>i.id===b.dataset.id); if(!it) return;
+    const nome=$("#e-nome").value.trim(), meta=parseMoney($("#e-meta").value);
+    if(!nome) return toast("O nome não pode ficar vazio");
+    if(isNaN(meta)) return toast("Meta inválida. Use algo como 250 ou 1.250,00");
+    it.nome=nome; it.meta=meta||0; it.grupo=$("#e-grupo").value;
+    editing=null; render(); scheduleSave(); toast("Item atualizado"); return;
+  }
+  if(a==="remover"){
+    if(confirmDel!==b.dataset.id){confirmDel=b.dataset.id;render();return}
+    d.itens=d.itens.filter(i=>i.id!==b.dataset.id); delete d.valores[b.dataset.id];
+    editing=null;confirmDel=null;render();scheduleSave();toast("Item removido");return;
+  }
+  if(a==="substituir") return lancar("define");
+  if(a==="editarcaixa"){editCaixa=true;render();setTimeout(()=>$("#caixa-real")?.focus());return}
+  if(a==="cancelarcaixa"){editCaixa=false;render();return}
+  if(a==="salvarcaixa"){const v=parseMoney($("#caixa-real")?.value);if(isNaN(v)||!$("#caixa-real").value.trim())return toast("Digite o valor, tipo 1.006,90");d.caixaReal={valor:v,data:new Date().toISOString()};editCaixa=false;render();scheduleSave();toast("Saldo da caixinha atualizado");return}
+  if(a==="pago"){const id=b.dataset.id;d.pagos=d.pagos||{};const arr=d.pagos[id]||(d.pagos[id]=Array(12).fill(null));arr[mes]=!isPago(id,mes);render();scheduleSave();const rc=tipoDe(id)==="R";toast(arr[mes]?(rc?"Marcado como recebido":"Marcado como pago"):(rc?"Voltou para a receber":"Voltou para a pagar"));return}
+});
+document.addEventListener("submit",e=>{if(e.target.id==="quick"){e.preventDefault();lancar("soma")}});
+function lancar(modo){
+  const d=cur(), it=d.itens.find(i=>i.id===$("#q-item").value), v=parseMoney($("#q-val").value), m=+$("#q-mes").value;
+  if(!it) return toast("Escolha um item");
+  if(isNaN(v)||(!v&&modo==="soma")) return toast("Digite um valor, tipo 45 ou 1.250,00");
+  const arr=vals(it.id); arr[m]=Math.round(((modo==="soma"?(+arr[m]||0):0)+v)*100)/100;
+  log(it,m,v,modo); d.pagos=d.pagos||{}; (d.pagos[it.id]||(d.pagos[it.id]=Array(12).fill(null)))[m]=true; mes=m; $("#q-val").value=""; render(); scheduleSave();
+  toast(`${it.nome}: ${fmt(arr[m])} em ${MESES[m]}`);
+}
+document.addEventListener("change",e=>{
+  const el=e.target; if(!el.matches("input.money[data-id]")) return;
+  const v=parseMoney(el.value); if(isNaN(v)){toast("Valor inválido");render();return}
+  const it=cur().itens.find(i=>i.id===el.dataset.id); const arr=vals(el.dataset.id);
+  if(arr[mes]===v) return; arr[mes]=v; log(it,mes,v,"define"); render(); scheduleSave();
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&e.target.matches("input.money[data-id]")) e.target.blur();
+  if(e.key==="Enter"&&e.target.id?.startsWith("new-")){e.preventDefault();document.querySelector(`[data-act="criaritem"][data-grupo="${e.target.id.slice(4)}"]`)?.click()}
+});
+async function novoAno(){
+  const ys=Object.keys(anos).map(Number).sort(); const base=ys.length?anos[ys[ys.length-1]]:null;
+  const novo=ys.length?ys[ys.length-1]+1:new Date().getFullYear();
+  const itens=base?JSON.parse(JSON.stringify(base.itens)):[
+    ["receitas",["Salário / trabalho","Freelas","Outras receitas"]],
+    ["invest",["Reserva de emergência","Investimentos"]],
+    ["fixas",["Dízimo e ofertas","Casa / aluguel","Celular","Contas (luz, água, internet)","Dívidas e parcelas"]],
+    ["trabalho",["Ferramentas de trabalho","Cursos"]],
+    ["transporte",["Combustível","Uber / ônibus"]],
+    ["alimentacao",["Mercado","iFood","Lanches e besteiras"]],
+    ["assinaturas",["Streaming","Música"]],
+    ["saude",["Academia","Farmácia","Corte de cabelo"]],
+    ["lazer",["Rolês e saídas","Roupas","Outros gastos"]]
+  ].flatMap(([g,ns])=>ns.map(n=>({id:slug(n),nome:n,grupo:g,meta:0})));
+  const valores={}; itens.forEach(i=>valores[i.id]=Array(12).fill(0));
+  anos[novo]={ano:novo,itens,valores,hist:[]}; ano=novo; mes=(novo===new Date().getFullYear()?new Date().getMonth():0); render(); scheduleSave(); toast(`${novo} criado com os mesmos itens`);
+}
+</script>
+
+</body>
+</html>
