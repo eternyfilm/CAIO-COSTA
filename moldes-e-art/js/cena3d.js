@@ -290,7 +290,7 @@ const ruido = texRuido();
 const matPeca = new THREE.MeshPhysicalMaterial({ color: '#f3e6c8', roughness: 0.5, sheen: 1, sheenColor: new THREE.Color('#ffd9a0'), envMapIntensity: 0.6, thickness: 1.4, ior: 1.45, attenuationDistance: 1.1, transmission: MIN, iridescence: MIN, bumpMap: ruido, bumpScale: 0, clearcoat: 0.1 });
 const peca = new THREE.Mesh(geoBolhas(3, 0.34, 0.56), matPeca);
 matsG.add(peca);
-const base2 = new THREE.Mesh(new THREE.CylinderGeometry(1.25, 1.3, 0.08, 96), matCromo()); base2.position.y = -1.05; matsG.add(base2);
+const base2 = new THREE.Mesh(new THREE.CylinderGeometry(1.25, 1.3, 0.08, 96), new THREE.MeshStandardMaterial({ color: '#c9d2dc', metalness: 1, roughness: 0.42, envMapIntensity: 0.45 })); base2.position.y = -1.05; matsG.add(base2);
 const aro2 = new THREE.Mesh(new THREE.TorusGeometry(1.28, 0.018, 12, 120), new THREE.MeshBasicMaterial({ color: new THREE.Color('#41b8ff').multiplyScalar(2.6), toneMapped: false }));
 aro2.rotation.x = Math.PI / 2; aro2.position.y = -1.0; matsG.add(aro2);
 const luzMat = new THREE.PointLight('#fff4e6', 9, 9, 2); luzMat.position.set(1.6, 2.2, 2.6); matsG.add(luzMat);
@@ -370,6 +370,7 @@ function pontoTela(px, py, out) {
   const t = -camera.position.z / dir.z;
   return out.copy(camera.position).addScaledVector(dir, t);
 }
+const textoHero = document.querySelector('#inicio .wrap');
 const secHero = $('#inicio'), secProc = $('#processo'), pinProc = secProc && secProc.querySelector('.pin'), secFim = $('#contato');
 const passos = Array.from(document.querySelectorAll('#passos li')), barraProc = $('#barraProc');
 const noAr = (r) => r.bottom > -80 && r.top < innerHeight + 80;
@@ -496,8 +497,16 @@ function loop() {
   const rH = secHero.getBoundingClientRect();
   if (ativa(hero, noAr(rH))) {
     const larga = innerWidth > 900;
-    pontoTela(larga ? innerWidth * 0.73 : innerWidth * 0.5, rH.top + rH.height * (larga ? 0.54 : 0.27), hero.position);
-    const s = (larga ? 0.5 : 0.3) * vh / 3.2 * (larga ? 1 : Math.max(escalaTela * 1.6, 0.8));
+    let cy = rH.top + rH.height * 0.54, s = 0.5 * vh / 3.2;
+    if (!larga) {
+      // celular: espaço livre = do fim do topo fixo até o começo do texto da abertura
+      const topoTexto = textoHero ? textoHero.getBoundingClientRect().top : rH.top + rH.height * 0.55;
+      const livre = Math.max(120, topoTexto - (rH.top + 64) - 12);
+      cy = rH.top + 64 + livre / 2;
+      const porAltura = (livre * 0.9 / 4.9) * vh / innerHeight;          // a cena tem ~4,9 unidades de altura
+      s = Math.min(porAltura, 0.3 * vh / 3.2 * Math.max(escalaTela * 1.6, 0.8));
+    }
+    pontoTela(larga ? innerWidth * 0.73 : innerWidth * 0.5, cy, hero.position);
     hero.scale.setScalar(s);
     hero.rotation.y = reduz ? 0 : Math.sin(t * 0.25) * 0.15 + mouse.x * 0.25;
     velaHero.grupo.rotation.y = reduz ? 0 : t * 0.12;
@@ -545,7 +554,7 @@ function loop() {
     velaProc.mat.color.copy(corCera).lerp(corQuente, (1 - abre) * enche * 0.7);
     velaProc.mat.userData.glow.value = (1 - abre) * enche * 1.6;
     const ativo = p < 0.36 ? 0 : p < 0.66 ? 1 : 2;
-    passos.forEach((li, i) => li.classList.toggle('on', i <= ativo));
+    passos.forEach((li, i) => { li.classList.toggle('on', i <= ativo); li.classList.toggle('atual', i === ativo); });
     if (barraProc) barraProc.style.width = (p * 100).toFixed(1) + '%';
   }
 

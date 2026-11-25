@@ -233,3 +233,22 @@ main,.rodape{position:relative;z-index:2}
 .sem-3d .barra-proc,.sem-3d .dica,.sem-3d .dica-in,.sem-3d .mat-palco{display:none}
 .sem-3d .mat-in{grid-template-columns:1fr;min-height:0}
 .sem-3d .hero{background:radial-gradient(80% 60% at 70% 40%,rgba(31,139,255,.18),transparent 70%)}
+
+/* ---------- correções do celular (25/11/2026) ---------- */
+@media (max-width:760px){
+  /* processo: só o passo atual aparece, o 3D fica com a metade de cima da tela e não pisa no título */
+  .passos li{display:none}
+  .passos li.atual{display:grid;opacity:1;transform:none}
+  .passos{margin-top:22px}
+  .processo{height:260vh}
+  .pin{align-items:flex-end;padding-bottom:28px}
+  .processo-in{padding-top:46vh}
+  /* "toque na chama" atrapalhava mais do que ajudava no celular */
+  .dica{display:none}
+  /* fim da página sem o buraco preto */
+  .final{min-height:auto;padding-block:72px 96px}
+  .logo-final{width:min(170px,44vw);margin-bottom:14px}
+}
+/* sem 3D: os 3 passos voltam todos */
+.sem-3d .passos li{display:grid}
+.sem-3d .processo-in{padding-top:0}
