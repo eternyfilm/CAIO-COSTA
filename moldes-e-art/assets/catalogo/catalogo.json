@@ -20,7 +20,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Molde azul + rosa amarela na mesa cinza do ateliê, logo MA Moldes & Artes na parede (logo possivelmente inserido)"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1FNLKINYIelBr3sGJiUa43RAtAtRCxedX.jpg"
     },
     {
      "id": "13U0c-qX8W1jYwNgO1PNvO8aguKfzYu6_",
@@ -35,7 +36,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Vela lótus rosa com legendas de medida/peso estilo story; produto pequeno"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/13U0c-qX8W1jYwNgO1PNvO8aguKfzYu6_.jpg"
     },
     {
      "id": "13U17UvsB53xk58vzi4qnBp4VCoDp8KaL",
@@ -50,7 +52,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Vela lótus rosa com legendas de medida/peso estilo story"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/13U17UvsB53xk58vzi4qnBp4VCoDp8KaL.jpg"
     },
     {
      "id": "13UCdGzuPvghMy1e3VmBThiixWsbkt-7T",
@@ -114,7 +117,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Peônia branca sobre molde azul; nítida, produto grande"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1CUcRVVuzRswvlmIyX4Z3uBRWj_Vmvnv9.jpg"
     },
     {
      "id": "1C_XtLJEOp3FFYfF4FEYno1TJEoSMwjpC",
@@ -174,7 +178,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Velas bico-de-papagaio vermelha e branca sobre fundo cinza liso; nítida"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1HLJ03I6YxyarzkI472BKHB9Ou2T1di7D.jpg"
     },
     {
      "id": "1HMKBSf8eQt0VZS0itG1S4eC4o6XMqpmz",
@@ -189,7 +194,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Vela suculenta verde/branca sobre fundo cinza liso; nítida"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1HMKBSf8eQt0VZS0itG1S4eC4o6XMqpmz.jpg"
     },
     {
      "id": "1HVzsLlqAMFRvZxkG465PplxioxI-WISq",
@@ -204,7 +210,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Vela bico-de-papagaio vermelha sobre fundo cinza liso; nítida"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1HVzsLlqAMFRvZxkG465PplxioxI-WISq.jpg"
     },
     {
      "id": "1HHuUt0B-gJUR6jtLVoLUYHVBKQC7J5GE",
@@ -219,7 +226,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Vela de lírio branca sobre fundo escuro; nítida e limpa"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1HHuUt0B-gJUR6jtLVoLUYHVBKQC7J5GE.jpg"
     },
     {
      "id": "1KJudu0gcZ8pLkiRVJ4D2V45JtxrDKygw",
@@ -298,7 +306,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Vela crisântemo laranja sobre granito, parede amarela"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1a5e5SggTCdEXC0Preo_1GDmm6BAHtZZY.jpg"
     },
     {
      "id": "1TWyBCfNQZjfQBX8ek0P1E8o-LUD8WB7q",
@@ -375,7 +384,9 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Rosa laranja + molde azul sobre granito, legenda 'Aproximadamente 128 gramas' (clique diferente de #76)"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1l6xOGDscat7fkSKpP_Z-G6AyHZLv2PhQ.jpg",
+     "medidas": "peça com aprox. 128 g"
     },
     {
      "id": "10bdMXYRqCAL9ReWXt1yAbc3zOvZg40mn",
@@ -390,7 +401,9 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Rosa laranja sobre molde azul em granito, legenda 'Aproximadamente 128 gramas'"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/10bdMXYRqCAL9ReWXt1yAbc3zOvZg40mn.jpg",
+     "medidas": "peça com aprox. 128 g"
     },
     {
      "id": "1sfZBm00tczX26H0qURDy_KgqbGxK1pCf",
@@ -577,7 +590,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde cinza + peça verde sobre fundo cinza; produto pequeno no quadro"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1JIQ8LqAwIzdBIY5m62YBOvlSv3ROZ38e.jpg"
     },
     {
      "id": "1JGxse_-9Aw8HJ41vQxLynY6ipL4nPsps",
@@ -607,7 +621,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde verde-água + flor creme sobre fundo claro; foto de celular, produto pequeno"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1AQpOitXWObdLuu7SSpCHFFJ6B0z_pALM.jpg"
     },
     {
      "id": "19_iy6StiXrpt2-5c_uoDik3xnH_Npm0A",
@@ -622,7 +637,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Peônia creme sobre molde verde-água, fundo cinza; foto de celular"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/19_iy6StiXrpt2-5c_uoDik3xnH_Npm0A.jpg"
     },
     {
      "id": "1tpUVX6UkeTcqYAZ94UvsLKiOWJ-aE5cW",
@@ -652,7 +668,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde azul de flores na mesa cinza, fundo escuro"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1G_H4P-pJicHuytCsbj4-3Br3nnOh4LC9.jpg"
     },
     {
      "id": "1GZFTIPjO71B8Kg4Jm5OIwg6bNlCjMvig",
@@ -667,7 +684,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Molde azul de girassol na mesa cinza, fundo escuro; nítido"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1GZFTIPjO71B8Kg4Jm5OIwg6bNlCjMvig.jpg"
     },
     {
      "id": "1GZxDEn2Z2Pie-AS6A3o7eTjGxCD0wUOT",
@@ -682,7 +700,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde azul de tulipa na mesa cinza; produto pequeno no quadro"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1GZxDEn2Z2Pie-AS6A3o7eTjGxCD0wUOT.jpg"
     },
     {
      "id": "1GSZ-zeHt9dkQKL4wJIttNsyUBDC4vlVH",
@@ -697,7 +716,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde azul de 3 flores na mesa cinza, fundo escuro; setup do ateliê"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1GSZ-zeHt9dkQKL4wJIttNsyUBDC4vlVH.jpg"
     },
     {
      "id": "1GgL6I1YlrxKff4VwEybPx9Q7kCFo44Wz",
@@ -712,7 +732,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde azul de 3 flores na mesa cinza, fundo escuro"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1GgL6I1YlrxKff4VwEybPx9Q7kCFo44Wz.jpg"
     },
     {
      "id": "10dUOkNxKGiSkee6z_F24SELq5lWox8_D",
@@ -742,7 +763,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde bege + rosa azul sobre tecido verde-escuro; foto real simples"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/10gqLNoUdU4ckwMK2_VBcF6b18X2VhTPt.jpg"
     },
     {
      "id": "115ZL8OET_XKaDCd_qCJy4if2P5EKkUVJ",
@@ -910,7 +932,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde laranja + vela suculenta sobre granito; cores saturadas"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/116CIexUnzFzTENKArp1f5pD093MoH5Oy.jpg"
     },
     {
      "id": "11ACrHlnM1DExMrGBkpZH7CqBdrfIvwV3",
@@ -1075,7 +1098,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Rosa pink sobre molde embalado em plástico; foto de celular"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/11M7g3ozzJN7bz279me03Xf86qELqH0Nz.jpg"
     },
     {
      "id": "11ZE9PLQ-WVTOrJsVOlilmZi_fhfF7xvb",
@@ -1105,7 +1129,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Suculenta em vela sobre granito (mesma bancada do ateliê); nítida e bem enquadrada"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1-vxy8bOfP9zXFgptq54Iog3tXlMkKPlG.jpg"
     },
     {
      "id": "1-lWsuO6oZSdekRsZ2njUNruAzS7dN5mj",
@@ -1165,7 +1190,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde azul + velas de margarida sobre fundo rosado; foto real"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/11fNI-5v0yUIG9o0XmXH6oruukqPEK2fx.jpg"
     },
     {
      "id": "11g0seGT-zETEhJ_n0NRKnnCABzvZkf-T",
@@ -1240,7 +1266,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Velas de lírio sobre granito; nítida e bem enquadrada"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/12qnUfpwPA712b0WdEbX9xGwiaelcoYcT.jpg"
     },
     {
      "id": "12paYzSl5_VDSaw7WPAe5kosJfkNHtmpR",
@@ -1270,7 +1297,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde verde com rosas vermelhas sobre fundo cinza; foto real"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/12oz5E83Lj_Y6uPESp7gKFgJpYQN9NaMs.jpg"
     },
     {
      "id": "14LBbKUxQoLSempdNb2OfJG15MqdwJwU8",
@@ -1319,7 +1347,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Velas de margarida (branca e rosa) sobre granito; foto de celular"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/flores-rosas/1q6DhyIVqCIbWG9aZVS3sZS80Ei0UIvAx.jpg"
     },
     {
      "id": "16-OyiTdbwloDEGfBRVOh8nclWMlmB1lI",
@@ -1493,7 +1522,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Vela árvore de Natal vermelha sobre fundo neutro claro; nítida e bem iluminada"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/natal/13TMOM2Gj699pHHwAX9pXvvPmmt80HJzG.jpg"
     },
     {
      "id": "1X82TH0y5iOKiNaQgOmjlMVdOqiXVxmWq",
@@ -1538,7 +1568,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Três velas árvore de Natal ao ar livre, mais próxima e nítida"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/natal/1z2s8uLXd7hg-UdP3yRih6XXKPrV950UT.jpg"
     },
     {
      "id": "1ven-e9REg6iuZ4KLY3xYmmZOfu5h0G6B",
@@ -1613,7 +1644,8 @@
       "nota": 5,
       "recortavel": true,
       "motivo": "Vela árvore de Natal com glitter e laço ao ar livre; nítida, produto grande"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/natal/1X2xW_GMTIN1wSt0GpQTPNe8JeuzcVaqG.jpg"
     },
     {
      "id": "1NbrOBHo8RJihy5LLBxQJ93T8I3BjMvr-",
@@ -1705,7 +1737,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Boneco de neve natalino sobre mesa escura; foto real"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/natal/1d-lq9NuQI8TNrfUidNJTuo_1lIN5gTPf.jpg"
     },
     {
      "id": "1_rROJvzyxpOjVbP339fh0kYXe8X4wZZU",
@@ -1720,7 +1753,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Rena natalina sobre mesa escura com fundo desfocado; foto real"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/natal/1_rROJvzyxpOjVbP339fh0kYXe8X4wZZU.jpg"
     },
     {
      "id": "1DkXxrag8rLNnA8kQ1booZBmHCpsih8Wm",
@@ -1750,7 +1784,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Papai Noel sobre mesa escura com fundo desfocado; foto real"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/natal/1dFiYMEs8nFosAyeLsvVmN7IDwSleaom3.jpg"
     },
     {
      "id": "118_lX1SuIZbMVsyuH-PP9quOwOtZKQur",
@@ -1765,7 +1800,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Pinguim natalino sobre mesa escura, desfoque de fundo; foto real"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/natal/118_lX1SuIZbMVsyuH-PP9quOwOtZKQur.jpg"
     },
     {
      "id": "1-bj1rCsPxTJE6R2PRl-NBbu2SbAqkWo6",
@@ -1855,7 +1891,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Vela árvore de Natal dourada/creme sobre mesa clara, fundo escuro; nítida"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/natal/1Dzp4R6P0gYBxx1nUWEb47veFlem65vP8.jpg"
     },
     {
      "id": "1qXNUeW5Fu6wvMZbQyTZnlkM0-xEIwIvR",
@@ -1954,7 +1991,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Vela esfera texturizada sobre fundo azul; foto de celular (mesma peça de #255)"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/velas/13hRFDk52pwLjjG8JHt_OU4sauu3-7iR0.jpg"
     },
     {
      "id": "13ZK9uK9dsrJWthakexQXL7WulzXlsjAf",
@@ -1969,7 +2007,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Vela esfera texturizada em fundo cinza com luz azul; mesma peça de velas #256 (foto caseira), então provavelmente própria; boa iluminação"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/velas/13ZK9uK9dsrJWthakexQXL7WulzXlsjAf.jpg"
     },
     {
      "id": "1jdK3rO5Oa9mx_dAk9gWWklG1QCuZPFgf",
@@ -2030,7 +2069,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Vela esfera geométrica + vela mão sobre fundo de papelão; foto real"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/velas/1beCgUx8jIoMiBTblNjExzi8obV7X9yHn.jpg"
     },
     {
      "id": "1bdTszWmBdrvA9AesSVj3S9-bxaQVyiWZ",
@@ -2090,7 +2130,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Vela ondulada branca sobre granito, fundo de madeira"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/velas/1b_C6iKhd5L3GM13cnYUf6P-hyQpIYJHL.jpg"
     },
     {
      "id": "1b_LbPMit-g17oMgLaYu_3fbPqb2T-jys",
@@ -2105,7 +2146,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Vela ondulada branca, outro ângulo, fundo de madeira"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/velas/1b_LbPMit-g17oMgLaYu_3fbPqb2T-jys.jpg"
     },
     {
      "id": "1bYsTQUEwMmEg2-2Tq_j6yhjeLd19m0aO",
@@ -2120,7 +2162,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Vela ondulada branca sobre granito escuro"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/velas/1bYsTQUEwMmEg2-2Tq_j6yhjeLd19m0aO.jpg"
     },
     {
      "id": "1bRSRIu0_vw2sYWiizVkjYiCZJXOi3b7g",
@@ -2150,7 +2193,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Velas esfera de bolinhas ao ar livre com plantas"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/velas/1zol8Hl5u_ZW3LSnSd2HXakWrGqrzY5YQ.jpg"
     },
     {
      "id": "1Wm_VKdXpCOCPKcJbw65Ha5gZz2x9D_Eq",
@@ -2272,7 +2316,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Vela entalhada dourada sobre mesa clara, fundo escuro; nítida"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/velas/1E0K9RBglNcXb_olJplVH4YaVRXRk0qv2.jpg"
     },
     {
      "id": "1EAthXM8gZhQFKBZJwo9rRlqj2-5GPD0_",
@@ -2287,7 +2332,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Vela entalhada dourada com base azulada, fundo escuro; nítida"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/velas/1EAthXM8gZhQFKBZJwo9rRlqj2-5GPD0_.jpg"
     },
     {
      "id": "1E3_wU3ySsy5bbzt2LWIy_nXpZpx1_e4u",
@@ -2302,7 +2348,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Duas velas entalhadas verdes sobre mesa clara, fundo escuro"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/velas/1E3_wU3ySsy5bbzt2LWIy_nXpZpx1_e4u.jpg"
     },
     {
      "id": "1JQiyOQPZz3MSEt9GkzpjKMbPqQ4JsEJp",
@@ -2494,7 +2541,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde azul + cavalo-marinho amarelo sobre fundo cinza"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/mar/1IhnjrxmIuRj8CqezHSpuMnwRmd5cSJFQ.jpg"
     },
     {
      "id": "1Id3RMQPqe1lRboJamKCEQuOYiHi8miWs",
@@ -2509,7 +2557,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Molde azul de conchas/estrelas + peças coloridas sobre fundo cinza; nítida e organizada"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/mar/1Id3RMQPqe1lRboJamKCEQuOYiHi8miWs.jpg"
     },
     {
      "id": "1Ii6Ohxd83dCBqiq7xqiIwpCpZhsDue2K",
@@ -2524,7 +2573,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde azul de estrela + peças sobre mesa clara, fundo escuro"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/mar/1Ii6Ohxd83dCBqiq7xqiIwpCpZhsDue2K.jpg"
     },
     {
      "id": "1If4sxpusDCt3_Gth45i80QwfuTfHeuE3",
@@ -2539,7 +2589,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde azul + peixe amarelo sobre fundo cinza; horizontal"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/mar/1If4sxpusDCt3_Gth45i80QwfuTfHeuE3.jpg"
     },
     {
      "id": "1Irbz8O0Rf_gWrDXecNPkj_wu7Z7w763v",
@@ -2554,7 +2605,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Peixe + molde azul sobre fundo cinza; horizontal"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/mar/1Irbz8O0Rf_gWrDXecNPkj_wu7Z7w763v.jpg"
     },
     {
      "id": "1J54WnzxD5x18FtjsTWI_eHRlE_6MsEeW",
@@ -2569,7 +2621,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Molde azul de animais marinhos + peças coloridas sobre fundo cinza; nítida"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/mar/1J54WnzxD5x18FtjsTWI_eHRlE_6MsEeW.jpg"
     },
     {
      "id": "1JA9FTngjmRD4S2wvcOxFtORQuvjW-yVS",
@@ -2683,7 +2736,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Nossa Senhora preta, outro ângulo mais próximo, parede texturizada"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/religiosos/1r_lR_9acFNT6mpmTGtgDzdFMBp_ngcVQ.jpg"
     },
     {
      "id": "1rTPqLr1YF--Oa2XOUZev-xwevx2xLk0B",
@@ -2699,7 +2753,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Nossa Senhora preta sobre bandeja branca, parede texturizada; foto de celular"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/religiosos/1rTPqLr1YF--Oa2XOUZev-xwevx2xLk0B.jpg"
     },
     {
      "id": "1DJT9HWkxQydOdZBXf3hZV5vSVN1qHEO9",
@@ -2714,7 +2769,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Divino Espírito Santo branco sobre tecido azul-marinho; foto real"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/religiosos/1DJT9HWkxQydOdZBXf3hZV5vSVN1qHEO9.jpg"
     },
     {
      "id": "13IjJU3CLvwbRGpA62Ui6MEnxhJanVOpE",
@@ -2774,7 +2830,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Divino Espírito Santo branco/dourado sobre fundo cinza-claro; foto real simples"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/religiosos/1DNnd8vHBZ7LbnCIk4H68L0fqqyopGju0.jpg"
     },
     {
      "id": "1DI5C_YJRajuoZhXlFDV7UIkVFNl-W958",
@@ -2813,7 +2870,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Jacaré dourado contra parede; foto de celular"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/animais-personagens/1K94BXvaXdEgjUZyrzYLKi8UCVIe4fPqK.jpg"
     },
     {
      "id": "1Ylv1iDPZvzqiYhHVdumxiTZe3cPtDqb3",
@@ -2843,7 +2901,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Peça amarela (sapinho) sobre bancada, fundo escuro; foto de celular"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/animais-personagens/1JFTUWvS_aTkKA9MEJd_wdO-eKtFIChwT.jpg"
     },
     {
      "id": "1xpCGvPIFdB1GuR3dasC9ybV_kGa7XPlC",
@@ -2875,7 +2934,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Coelhinhos em sabonete/vela sobre bancada clara, fundo escuro; foto de celular"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/animais-personagens/1G7Y-k7WBUKNKh9dnNaIzmbTP0JrYWA6g.jpg"
     },
     {
      "id": "1VeNxjzBtAIaciiEFhLYFqYGC-ZkOEx3G",
@@ -3020,7 +3080,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Vela coração vermelha sobre granito; produto grande e nítido"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/coracao/14bwBiMex3ZQpayDcKg_gjKGIFs12rUzl.jpg"
     }
    ]
   },
@@ -3059,7 +3120,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Estrelas-do-mar brancas sobre granito preto"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/estrela/1zUTZo5kCdhLCu7jsBut5KzFeclCP1noc.jpg"
     },
     {
      "id": "1kXBzOPbBl0e2DztYua4g93OaxVt_3L-6",
@@ -3248,7 +3310,8 @@
       "nota": 5,
       "recortavel": true,
       "motivo": "Buda azul sobre base de mandala, parede de tijolo branco; foto real bem iluminada"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/buda/14u1tAUjjIOJHCgZJR9qGjmPnN12oyI92.jpg"
     },
     {
      "id": "14wiWcSFm-7Fgp0c8FxXUw1JZj6BY55KR",
@@ -3278,7 +3341,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Cabeça de Buda bronze, foto de celular com fundo com objetos"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/buda/14x9NheVn_Rv5x7dw6qi_D6aL_64WdG0s.jpg"
     },
     {
      "id": "14mNhChghUxbsa2Z_49gJL6fJJEf2S7C7",
@@ -3333,7 +3397,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Par de chinelinhos em sabonete sobre fundo marrom"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/diversos/1JvJNuLgiyElsfQgEQvtacZKjIdQcPrRr.jpg"
     },
     {
      "id": "1zHaCq2kZl8MVue1G-7zE174jYjkgKKhv",
@@ -3348,7 +3413,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Plaquinha redonda com coração rendado e legenda de medidas"
-     }
+     },
+     "medidas": "5 x 7,5 cm (altura x largura)"
     },
     {
      "id": "1-hJ40HO0sUi-h3ZbkJTv9PYs3XicUnT0",
@@ -3363,7 +3429,9 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Plaquinha de pomba em fundo bege, legenda de medidas tipo story"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/diversos/1-hJ40HO0sUi-h3ZbkJTv9PYs3XicUnT0.jpg",
+     "medidas": "5 x 7,5 cm (altura x largura)"
     },
     {
      "id": "1wp5fwzboQGp3o11HZhDn8iBRimHPsQM6",
@@ -3378,7 +3446,9 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Plaquinha redonda com coração floral e legenda de medidas"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/diversos/1wp5fwzboQGp3o11HZhDn8iBRimHPsQM6.jpg",
+     "medidas": "5 x 7,5 cm (altura x largura)"
     },
     {
      "id": "1kVqrCxfxmL0eyEGZg3xzuJOYDxFs8bEF",
@@ -3393,7 +3463,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Plaquinha redonda com querubim e legenda de medidas"
-     }
+     },
+     "medidas": "5 x 7,5 cm (altura x largura)"
     },
     {
      "id": "1FC4i0JmaYm7xQgtVNO9nnNc0OAeTBvvG",
@@ -3477,7 +3548,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde azul com 3 bebês em sabonete; foto real"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/infantis/17kd_myUamlzC-VLE__4gHqsMf7PzZIJT.jpg"
     },
     {
      "id": "17abheVuwxWbc4s12Odwhq3Ycl15L85Ue",
@@ -3507,7 +3579,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Sabonete carrinho sobre mesa clara, fundo escuro, legenda de medidas"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/infantis/1V7z4AFBQSGG-yjzQtzBpO2CHbFXb1ijN.jpg"
     },
     {
      "id": "1PU-bfNbrB70j7DRccw5xODET4mzbRci6",
@@ -3553,7 +3626,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Borboleta de suculentas verde sobre superfície marmorizada"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/infantis/1E2K5zaxTzvPgJt7fDYr1FG7B0qoeNZ29.jpg"
     },
     {
      "id": "131d9eA6k3PsV8MtE5LH4lb9lJdIqSf93",
@@ -3654,7 +3728,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Vela Ghostface sobre granito; foto de celular nítida"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/halloween/1DCpPSqlC11oHskqiGI46jGPwcm16kV_h.jpg"
     },
     {
      "id": "1kuOPkeZ07zCmiuNpRK8WTqxUV_jfYlAw",
@@ -3684,7 +3759,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Molde azul + sabonetes de abóbora sobre fundo cinza"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/halloween/1JBUK-UpS08pdCeBsJP_vlT0bX-rCefI_.jpg"
     }
    ]
   },
@@ -3939,7 +4015,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Sabonete AMOR + molde azul recortados em fundo branco (recorte amador de foto própria)"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/quadradas/12SIS1e3r03Ke22vxDXqIrdNNE-iqk3DB.jpg"
     },
     {
      "id": "12RjVs1q4uWpxkCZoUjDUIoxNwWtcBatK",
@@ -3954,7 +4031,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Sabonete PAZ + molde azul recortados em fundo branco (recorte amador de foto própria)"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/quadradas/12RjVs1q4uWpxkCZoUjDUIoxNwWtcBatK.jpg"
     },
     {
      "id": "12O82Oz1SPkYpn7R5F4HaBLDWUqMDMkCV",
@@ -3969,7 +4047,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Sabonete FORÇA + molde azul recortados em fundo branco (recorte amador de foto própria; mesmas peças de #232)"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/quadradas/12O82Oz1SPkYpn7R5F4HaBLDWUqMDMkCV.jpg"
     },
     {
      "id": "12MG8fZO5FohEew3hLfkLvRKu2ccv4hDg",
@@ -4153,7 +4232,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Forma de partilhas com sabonetes sobre granito; foto de celular"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/partilhas-pequenas/1J-J7SiUQNUDll3y5S3ICoXbGd5y4BHDh.jpg"
     },
     {
      "id": "1PW73FQFi-XU5r_OZA4hUKrG-gM6HdQ2M",
@@ -4393,7 +4473,8 @@
       "nota": 4,
       "recortavel": true,
       "motivo": "Caveira entre mãos em preto, fundo claro neutro; foto real nítida"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/caveira/13IJSDYqIPNPyYAbPhQ-glj2GMYatXuiD.jpg"
     },
     {
      "id": "1HacVsspRdmOP87B6CIALBb1h6Evf8S_O",
@@ -4408,7 +4489,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Caveira preta sobre fundo de espuma cinza; foto de celular"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/caveira/1HacVsspRdmOP87B6CIALBb1h6Evf8S_O.jpg"
     }
    ]
   },
@@ -4540,7 +4622,8 @@
       "nota": 3,
       "recortavel": true,
       "motivo": "Anjo rosa em sabonete sobre papelão; foto real de celular"
-     }
+     },
+     "padrao": "assets/catalogo/padrao/anjos/1c8rlAizwjC5phr-jNTTYlz02wgQmDyBx.jpg"
     },
     {
      "id": "11yAgqzk5DpFQBf9Z0dWOiA0NkzfM3S9b",
