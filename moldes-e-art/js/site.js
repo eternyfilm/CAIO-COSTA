@@ -78,10 +78,13 @@
         n++;
         // o código vem gravado no JSON e nunca muda (se mudasse, o "quero o FLO-07" de uma conversa
         // antiga passaria a apontar pra outro molde); o calculado é só reserva pra foto nova sem código
-        return { id: i.id, src: i.arquivo, cat: c.slug, catNome: c.nome,
+        // `padrao`: versão padronizada (produto recortado em fundo de estúdio); se não houver, a foto original
+        return { id: i.id, src: i.padrao || i.arquivo, pad: !!i.padrao, cat: c.slug, catNome: c.nome,
           codigo: i.codigo || (siglaDe(c.slug) + '-N' + String(n).padStart(2, '0')),
           titulo: (i.titulo || '').trim(), medidas: (i.medidas || '').trim() };
       });
+      // padronizadas primeiro: a primeira tela de cada categoria já sai uniforme
+      c.itens.sort(function (a, b) { return (b.pad ? 1 : 0) - (a.pad ? 1 : 0); });
     });
     return cats;
   }
