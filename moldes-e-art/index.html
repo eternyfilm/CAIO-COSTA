@@ -6,6 +6,15 @@
 <title>Moldes e Art · Moldes de silicone</title>
 <meta name="description" content="Moldes de silicone personalizados para velas, sabonetes, resina, gesso e concreto. Feitos em Brasília, enviados para todo o Brasil.">
 <meta name="theme-color" content="#030712">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Moldes e Art">
+<meta property="og:title" content="Moldes e Art · Moldes de silicone prontos e sob medida">
+<meta property="og:description" content="Moldes de silicone para velas, sabonetes, resina, gesso e concreto. Feitos em Brasília, enviados para todo o Brasil. Peça pelo WhatsApp.">
+<!-- og:image: quando o site tiver domínio, trocar pelo endereço completo (https://.../assets/og.jpg); caminho relativo não gera prévia -->
+<meta property="og:image" content="assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/logo-256.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,6 +51,7 @@
     <a href="#catalogo">Catálogo</a>
     <a href="#sob-medida">Sob medida</a>
   </nav>
+  <a href="#catalogo" class="bt bt-sec sm so-cel">Catálogo</a>
   <a class="bt bt-zap sm" data-zap="Olá! Vim pelo site da Moldes e Art e quero saber mais sobre os moldes." href="#" target="_blank" rel="noopener">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg>
     <span>WhatsApp</span>
@@ -88,12 +98,12 @@
         <p class="eyebrow"><i></i>Um molde, cinco materiais</p>
         <h2 class="h2">Escolha o <em>material.</em></h2>
         <p class="sub" id="matDesc">Cera de soja ou parafina. O silicone aguenta a temperatura e desenforma sem esforço.</p>
-        <div class="chips" role="tablist" aria-label="Materiais">
-          <button role="tab" class="chip on" data-mat="vela" aria-selected="true">Vela</button>
-          <button role="tab" class="chip" data-mat="sabonete" aria-selected="false">Sabonete</button>
-          <button role="tab" class="chip" data-mat="resina" aria-selected="false">Resina</button>
-          <button role="tab" class="chip" data-mat="gesso" aria-selected="false">Gesso</button>
-          <button role="tab" class="chip" data-mat="concreto" aria-selected="false">Concreto</button>
+        <div class="chips" role="group" aria-label="Materiais">
+          <button class="chip on" data-mat="vela" aria-pressed="true">Vela</button>
+          <button class="chip" data-mat="sabonete" aria-pressed="false">Sabonete</button>
+          <button class="chip" data-mat="resina" aria-pressed="false">Resina</button>
+          <button class="chip" data-mat="gesso" aria-pressed="false">Gesso</button>
+          <button class="chip" data-mat="concreto" aria-pressed="false">Concreto</button>
         </div>
         <p class="dica-in">Arraste a peça para girar.</p>
       </div>
@@ -112,10 +122,10 @@
         </div>
         <label class="busca">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input id="busca" type="search" placeholder="Buscar categoria (ex.: rosa, anjo, natal)">
+          <input id="busca" type="search" aria-label="Buscar molde" placeholder="Buscar (ex.: rosa, santo, natal)">
         </label>
       </div>
-      <div class="cats" id="cats" role="tablist" aria-label="Categorias"></div>
+      <div class="cats" id="cats" role="group" aria-label="Categorias"></div>
       <div class="grade" id="grade" aria-live="polite"></div>
       <div class="mais-wrap"><button class="bt bt-sec" id="maisBtn" hidden>Ver mais moldes</button></div>
     </div>
@@ -149,8 +159,18 @@
             </select>
           </div>
           <div>
-            <label for="fQtd">Quantidade de moldes</label>
+            <label for="fQtd">Quantos moldes?</label>
             <input id="fQtd" name="qtd" type="number" min="1" value="1" inputmode="numeric">
+          </div>
+        </div>
+        <div class="duas">
+          <div>
+            <label for="fPecas">Quantas peças vai fazer? <small>(opcional)</small></label>
+            <input id="fPecas" name="pecas" type="text" inputmode="numeric" placeholder="Ex.: 120 lembrancinhas">
+          </div>
+          <div>
+            <label for="fPrazo">Para quando precisa? <small>(opcional)</small></label>
+            <input id="fPrazo" name="prazo" type="text" placeholder="Ex.: 15 de março">
           </div>
         </div>
         <label for="fCidade">Cidade / UF (para o frete)</label>
@@ -159,14 +179,14 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Z"/></svg>
           <span>Enviar pelo WhatsApp</span>
         </button>
-        <p class="nota" id="notaForm">A mensagem abre pronta no WhatsApp. Você só confere e envia.</p>
+        <p class="nota" id="notaForm">A mensagem abre pronta no WhatsApp. Depois é só mandar a foto ou o logo na conversa.</p>
       </form>
     </div>
   </section>
 
   <!-- 6. ENVIO BRASIL -->
   <section class="sec envio" id="envio" data-cena="envio">
-    <div class="wrap">
+    <div class="wrap centro">
       <p class="eyebrow"><i></i>De Brasília para o Brasil</p>
       <h2 class="h2 centro">Enviamos para <em>todos os estados.</em></h2>
     </div>
@@ -193,7 +213,7 @@
 
 <footer class="rodape">
   <div class="wrap rod-in">
-    <span>© Moldes e Art · Brasília, DF</span>
+    <span>© Moldes e Art · Brasília, DF · WhatsApp <a data-zap-num href="#">(61) 99453-8021</a></span>
     <span>Moldes de silicone para velas, sabonetes, resina, gesso e concreto</span>
   </div>
 </footer>
@@ -202,14 +222,14 @@
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg>
 </a>
 
-<div class="lightbox" id="lb" hidden>
+<div class="lightbox" id="lb" role="dialog" aria-modal="true" aria-label="Foto do molde" hidden>
   <button class="lb-fechar" id="lbFechar" aria-label="Fechar">×</button>
   <button class="lb-nav lb-ant" id="lbAnt" aria-label="Anterior">‹</button>
   <figure>
     <img id="lbImg" alt="">
     <figcaption>
       <div><span id="lbCat"></span><strong id="lbCod"></strong></div>
-      <a class="bt bt-zap sm" id="lbZap" href="#" target="_blank" rel="noopener"><span>Pedir este molde</span></a>
+      <a class="bt bt-zap" id="lbZap" href="#" target="_blank" rel="noopener"><span>Pedir pelo WhatsApp</span></a>
     </figcaption>
   </figure>
   <button class="lb-nav lb-prox" id="lbProx" aria-label="Próximo">›</button>

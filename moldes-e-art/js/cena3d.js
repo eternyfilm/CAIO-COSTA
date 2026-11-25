@@ -23,7 +23,7 @@ let renderer;
 try {
   renderer = new THREE.WebGLRenderer({ canvas, antialias: !celular, powerPreference: 'high-performance' });
 } catch (e) {
-  document.body.classList.add('sem-3d'); canvas.remove(); tiraLoader();
+  document.documentElement.classList.add('sem-3d'); canvas.remove(); tiraLoader();
   throw e;
 }
 // 1.8 com bloom em tela cheia pesava demais em PC fraco; a qualidade ainda cai sozinha se o FPS não segurar (ver "qualidade adaptativa")
@@ -278,7 +278,7 @@ const velaProc = criaVela({ r: 0.36, h: 1.2, canais: 16, luz: true });
 velaProc.auto = true; velaProc.aceso = false; velaProc.on = 0; velaProc.fUni.uOn.value = 0;
 const luzProc = new THREE.PointLight('#fff1dc', 0, 6, 2); luzProc.position.set(0.6, 0.8, 2.2); proc.add(luzProc);
 proc.add(velaProc.grupo);
-const jato = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.05, 2.2, 16), new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffb35c').multiplyScalar(2.2), transparent: true, toneMapped: false }));
+const jato = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.05, 2.2, 16), new THREE.MeshBasicMaterial({ color: new THREE.Color('#ffb35c').multiplyScalar(1.15), transparent: true, toneMapped: false }));
 jato.position.y = 0.85 + 1.1; proc.add(jato);
 
 // ---------------------------------------------------------------- MATERIAIS
@@ -313,21 +313,24 @@ function escolheMat(nome) {
   if (desc) { desc.style.opacity = 0; setTimeout(() => { desc.textContent = m.desc; desc.style.opacity = 1; }, 180); }
 }
 document.querySelectorAll('[data-mat]').forEach((b) => b.addEventListener('click', () => {
-  document.querySelectorAll('[data-mat]').forEach((x) => { x.classList.toggle('on', x === b); x.setAttribute('aria-selected', x === b); });
+  document.querySelectorAll('[data-mat]').forEach((x) => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', x === b); });
   escolheMat(b.dataset.mat);
 }));
 
 // arrastar para girar
 const palco = $('#matPalco');
-const giroMat = { x: 0.35, y: 0.6, vx: 0, vy: 0.004, arrastando: false, ux: 0, uy: 0 };
+const giroMat = { x: 0.35, y: 0.6, vx: 0, vy: 0.3, arrastando: false, ux: 0, uy: 0, tMove: 0 }; // vx/vy em rad/s
 if (palco) {
   palco.addEventListener('pointerdown', (e) => { giroMat.arrastando = true; giroMat.ux = e.clientX; giroMat.uy = e.clientY; palco.setPointerCapture(e.pointerId); });
   palco.addEventListener('pointermove', (e) => {
     if (!giroMat.arrastando) return;
-    giroMat.vy = (e.clientX - giroMat.ux) * 0.008; giroMat.vx = (e.clientY - giroMat.uy) * 0.008;
-    giroMat.ux = e.clientX; giroMat.uy = e.clientY;
+    const dx = e.clientX - giroMat.ux, dy = e.clientY - giroMat.uy, agora = performance.now();
+    const dtm = Math.max(8, agora - (giroMat.tMove || agora - 16)) / 1000;
+    giroMat.y += dx * 0.01; giroMat.x += dy * 0.01;           // a peça acompanha o dedo, 1:1
+    giroMat.vy = (dx * 0.01) / dtm; giroMat.vx = (dy * 0.01) / dtm; // velocidade pra inércia ao soltar
+    giroMat.ux = e.clientX; giroMat.uy = e.clientY; giroMat.tMove = agora;
   });
-  const solta = () => { giroMat.arrastando = false; };
+  const solta = () => { giroMat.arrastando = false; if (performance.now() - giroMat.tMove > 60) { giroMat.vx = 0; giroMat.vy = 0; } };
   palco.addEventListener('pointerup', solta); palco.addEventListener('pointercancel', solta);
 }
 
@@ -382,8 +385,9 @@ const interativo = (el) => el && el.closest && el.closest('a,button,input,textar
 // o mouse dispara pointermove muito mais vezes que o monitor desenha; o raycast roda no máximo 1x por frame
 let moveSujo = null;
 window.addEventListener('pointermove', (e) => {
+  if (e.pointerType === 'touch') return;
   mouseAlvo.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
-  if (e.pointerType !== 'touch') moveSujo = e;
+  moveSujo = e;
 }, { passive: true });
 function processaHover() {
   const e = moveSujo; moveSujo = null; if (!e) return;
@@ -396,7 +400,7 @@ function processaHover() {
   document.body.style.cursor = sobre ? 'pointer' : '';
   if (sobre) {
     let o = sobre; while (o && !deco.includes(o)) o = o.parent;
-    if (o) o.userData.giro = Math.min(o.userData.giro + 0.6, 6);
+    if (o) o.userData.giro = Math.min(o.userData.giro + 0.25, 1.4);
   }
 }
 window.addEventListener('click', (e) => {
@@ -409,6 +413,7 @@ window.addEventListener('click', (e) => {
 });
 
 // ---------------------------------------------------------------- loop
+let pSuave = 0;
 const relogio = new THREE.Clock();
 let primeiroFrame = true, rodando = false, iniciado = false;
 document.addEventListener('visibilitychange', () => {
@@ -480,12 +485,12 @@ function loop() {
   const escalaTela = Math.min(1, camera.aspect / 0.9); // encolhe em telas estreitas
 
   // câmera segue o mouse de leve
-  mouse.lerp(mouseAlvo, 0.05);
+  mouse.lerp(mouseAlvo, 1 - Math.pow(0.95, dt * 60));
   if (!reduz) { camera.position.x = mouse.x * 0.35; camera.position.y = mouse.y * 0.25; }
   camera.lookAt(0, 0, 0);
 
   // poeira sobe com a rolagem
-  poeira.rotation.y = t * 0.01; poeira.position.y = (scrollY / innerHeight) * 1.2;
+  poeira.rotation.y = reduz ? 0 : t * 0.01; poeira.position.y = (scrollY / innerHeight) * 1.2;
 
   // HERO
   const rH = secHero.getBoundingClientRect();
@@ -495,19 +500,21 @@ function loop() {
     const s = (larga ? 0.5 : 0.3) * vh / 3.2 * (larga ? 1 : Math.max(escalaTela * 1.6, 0.8));
     hero.scale.setScalar(s);
     hero.rotation.y = reduz ? 0 : Math.sin(t * 0.25) * 0.15 + mouse.x * 0.25;
-    velaHero.grupo.rotation.y = t * 0.12;
+    velaHero.grupo.rotation.y = reduz ? 0 : t * 0.12;
     deco.forEach((m, i) => {
-      const u = m.userData; u.giro *= 0.96;
+      const u = m.userData; u.giro *= Math.pow(0.96, dt * 60);
       const ang = (reduz ? 0 : t * 0.08 * u.vel) ;
-      m.position.set(u.base.x * Math.cos(ang) - u.base.z * Math.sin(ang), u.base.y + Math.sin(t * 0.8 + u.fase) * 0.12, u.base.x * Math.sin(ang) + u.base.z * Math.cos(ang));
-      m.rotateOnAxis(u.rot, (u.vel * 0.4 + u.giro) * dt);
+      m.position.set(u.base.x * Math.cos(ang) - u.base.z * Math.sin(ang), u.base.y + (reduz ? 0 : Math.sin(t * 0.8 + u.fase) * 0.12), u.base.x * Math.sin(ang) + u.base.z * Math.cos(ang));
+      if (!reduz) m.rotateOnAxis(u.rot, (u.vel * 0.4 + u.giro) * dt);
     });
   }
 
   // PROCESSO
   const rP = secProc.getBoundingClientRect();
   if (ativa(proc, noAr(rP))) {
-    const p = clamp01(-rP.top / (rP.height - innerHeight));
+    const pCru = clamp01(-rP.top / (rP.height - innerHeight));
+    pSuave += (pCru - pSuave) * (reduz ? 1 : 1 - Math.exp(-dt * 7));
+    const p = pSuave;
     const larga = innerWidth > 900;
     const rPin = pinProc.getBoundingClientRect();
     pontoTela(larga ? innerWidth * 0.68 : innerWidth * 0.5, rPin.top + rPin.height * (larga ? 0.52 : 0.28), proc.position);
@@ -520,15 +527,21 @@ function loop() {
     const vidro = suave(0.3, 0.4, p) * (1 - suave(0.62, 0.7, p));
     mE.material.opacity = mD.material.opacity = 1 - vidro * 0.68;
     costura.material.opacity = (1 - abre) * (0.6 + Math.sin(t * 3) * 0.3);
-    jato.visible = despeja > 0.01; jato.scale.set(1, despeja, 1); jato.position.y = 0.85 + 1.1 * despeja;
+    const TOPO = 3.05, BOCA = 0.85;
+    const yBaixo = TOPO - (TOPO - BOCA) * suave(0.30, 0.36, p), yCima = TOPO - (TOPO - BOCA) * suave(0.58, 0.64, p);
+    const comp = yCima - yBaixo;
+    jato.visible = comp > 0.02;
+    jato.scale.set(1 + Math.sin(t * 9) * 0.06, Math.max(comp, 0.001) / 2.2, 1 + Math.cos(t * 9) * 0.06);
+    jato.position.y = (yCima + yBaixo) / 2;
     const fill = enche;
     mostraVela(velaProc, fill > 0.01);
     velaProc.grupo.scale.set(1, Math.max(fill, 0.01), 1);
     velaProc.grupo.position.y = -0.6 + 0.6 * fill + abre * 0.12;
     velaProc.aceso = abre > 0.85;
     luzProc.intensity = abre * 2.2 + (despeja * 3 + enche * (1 - abre) * 1.5);
-    luzProc.color.copy(abre > 0.5 ? luzFria : luzQuente);
-    velaProc.grupo.rotation.y = abre * t * 0.5;
+    luzProc.color.lerpColors(luzQuente, luzFria, suave(0.3, 0.7, abre));
+    velaProc.ang = (velaProc.ang || 0) + (reduz ? 0 : abre * abre * dt * 0.35);
+    velaProc.grupo.rotation.y = velaProc.ang;
     velaProc.mat.color.copy(corCera).lerp(corQuente, (1 - abre) * enche * 0.7);
     velaProc.mat.userData.glow.value = (1 - abre) * enche * 1.6;
     const ativo = p < 0.36 ? 0 : p < 0.66 ? 1 : 2;
@@ -541,13 +554,18 @@ function loop() {
   if (ativa(matsG, !!rM && noAr(rM))) {
     pontoTela(rM.left + rM.width / 2, rM.top + rM.height * 0.52, matsG.position);
     const sM = (rM.height / innerHeight) * vh / 4.4;
-    pulso *= 0.9;
+    pulso *= Math.pow(0.9, dt * 60);
     matsG.scale.setScalar(sM * (1 - pulso * 0.06));
-    if (!giroMat.arrastando) { giroMat.vx *= 0.94; giroMat.vy += ((reduz ? 0 : 0.005) - giroMat.vy) * 0.03; }
-    giroMat.x += giroMat.vx; giroMat.y += giroMat.vy + pulso * 0.08;
-    giroMat.x = Math.max(-0.9, Math.min(0.9, giroMat.x));
+    if (!giroMat.arrastando) {
+      giroMat.vx *= Math.pow(0.94, dt * 60);
+      giroMat.vy += ((reduz ? 0 : 0.3) - giroMat.vy) * (1 - Math.pow(0.97, dt * 60));
+      giroMat.x += giroMat.vx * dt; giroMat.y += giroMat.vy * dt + (reduz ? 0 : pulso * 0.08 * dt * 60);
+      // passou do limite de inclinação: volta com mola, sem parede dura
+      const lim = Math.max(-0.9, Math.min(0.9, giroMat.x));
+      giroMat.x += (lim - giroMat.x) * (1 - Math.exp(-dt * 10));
+    } else if (performance.now() - giroMat.tMove > 60) { giroMat.vx = 0; giroMat.vy = 0; }
     peca.rotation.set(giroMat.x, giroMat.y, 0);
-    peca.position.y = Math.sin(t * 0.9) * 0.05;
+    peca.position.y = reduz ? 0 : Math.sin(t * 0.9) * 0.05;
     const k = Math.min(1, dt * 5);
     matPeca.color.lerp(alvoMat.corC, k);
     matPeca.attenuationColor.lerp(alvoMat.attC, k);
@@ -602,7 +620,7 @@ function aquece() {
 function inicia() {
   if (iniciado) return;
   aquece();
-  iniciado = true; rodando = !document.hidden;
+  iniciado = true; rodando = !document.hidden; window.__3dOk = true;
   relogio.getDelta();
   if (rodando) requestAnimationFrame(loop);
 }
