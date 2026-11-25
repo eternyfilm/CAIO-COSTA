@@ -93,3 +93,28 @@ O site resolve o "uau" e falha no "comprar". O catálogo, que é o que vende, er
   - `buda/14u1tAUj…` (buda azul na mandala)
   - `caveira/13IJSDYq…`
   - `flores-rosas/1HLJ03I6…` (bico-de-papagaio)
+
+## Segunda rodada: fotos na cena (20 designers, 25/11/2026)
+
+A cena desenhada por código no estilo do post (mesa de madeira, bokeh, fatia de tronco) foi reprovada pelos 20 designers, com nota média entre 2,2 e 2,7 de 10. Motivos:
+- as fotos originais foram tiradas de cima e a cena é vista de frente;
+- a luz do produto não bate com a da cena;
+- não há sombra de contato;
+- o fundo e a fatia têm cara de desenho;
+- a cor do produto tinha sido alterada pra combinar com a cena.
+
+A referência é imagem 100% gerada por IA (o próprio Instagram marca), e montagem com foto de celular não chega nela.
+
+**Decisão aplicada:** fundo neutro quente (areia) com a cor do produto intacta e forma à esquerda e peça à direita quando as duas aparecem na foto. Os scripts estão em `ferramentas/areia.py`.
+
+**Recomendação unânime para chegar no nível do post: sessão de fotos real com cenário fixo no ateliê.**
+- Kit de R$ 250 a 500:
+  - tábua de madeira escura;
+  - fatias de tronco reais;
+  - cordão de LED quente a 1,5 m atrás;
+  - flores artificiais;
+  - painel LED quente com rebatedor;
+  - tripé de celular com a posição marcada com fita.
+- Sempre a forma limpa à esquerda e a peça à direita, com o mesmo ângulo e a mesma luz.
+- Uns 5 minutos por produto: de 2 a 3 dias para os ~150 próprios.
+- IA nunca redesenha o molde nem a peça do catálogo.
