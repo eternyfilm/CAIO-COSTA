@@ -118,3 +118,12 @@ A referência é imagem 100% gerada por IA (o próprio Instagram marca), e monta
 - Sempre a forma limpa à esquerda e a peça à direita, com o mesmo ângulo e a mesma luz.
 - Uns 5 minutos por produto: de 2 a 3 dias para os ~150 próprios.
 - IA nunca redesenha o molde nem a peça do catálogo.
+
+## Terceira rodada: cena gerada pela OpenAI em volta do produto real (25/11/2026)
+
+A cena no estilo do post agora é gerada pela API de imagens da OpenAI (`gpt-image-2`), só **em volta** do produto: mesa, fatia de tronco, velas, pisca-pisca e flores. O processo:
+1. os recortes reais são montados com a forma à esquerda e a peça à direita;
+2. a IA gera o ambiente com o produto protegido por máscara e respeita o ângulo da foto original;
+3. os pixels originais do produto são recolados por cima, na posição que a IA usou (casamento entre 93% e 100%).
+
+O produto nunca é redesenhado. As 77 foram revisadas uma a uma. Uma delas, o molde de abóboras do Halloween, saiu com peças duplicadas pela IA em duas tentativas e ficou na versão fiel em fundo areia. O script está em `ferramentas/openai_cena.py`. Custo: uns US$ 0,05 por imagem.
