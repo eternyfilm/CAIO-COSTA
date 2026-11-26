@@ -39,3 +39,11 @@ Medido no mesmo roteiro de rolagem: 16 recompilações de shader antes, 0 agora;
 - Nome e medida de cada molde (hoje os cards mostram "Molde flores / rosas" com um código).
 - Preços, se ele quiser mostrar.
 - Identidade visual: o site segue o logo atual (neon/cromado), que a própria análise mandou descartar. Quando a marca nova sair, troca as variáveis do `css/site.css` e os arquivos `assets/logo*.png`.
+
+## v2 (redesign em teste)
+
+Pasta `v2/`: nova versão do site com fundo claro (cera), azul silicone como assinatura e blocos nogueira,
+inspirada em lusion.co (3D numa janela, manifesto palavra por palavra) e landonorris.com (tipografia mista,
+colagem editorial, rodapé em cartão com aba). Usa as mesmas fotos e o mesmo `assets/catalogo/catalogo.json`.
+Prévia publicada num segundo site do Render (moldes-e-art-v2). Para virar o site oficial, basta trocar o
+comando de build do serviço principal para copiar `v2/` no lugar de `index.html css js`.
