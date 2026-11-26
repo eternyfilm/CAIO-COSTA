@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Moldes e Art · Moldes de silicone</title>
+<meta name="description" content="Moldes de silicone personalizados para velas, sabonetes, resina, gesso e concreto. Feitos em Brasília, enviados para todo o Brasil.">
+<meta name="theme-color" content="#030712">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Moldes e Art">
+<meta property="og:title" content="Moldes e Art · Moldes de silicone prontos e sob medida">
+<meta property="og:description" content="Moldes de silicone para velas, sabonetes, resina, gesso e concreto. Feitos em Brasília, enviados para todo o Brasil. Peça pelo WhatsApp.">
+<meta property="og:image" content="https://moldes-e-art.onrender.com/assets/og.jpg">
+<meta property="og:url" content="https://moldes-e-art.onrender.com/">
+<link rel="canonical" href="https://moldes-e-art.onrender.com/">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/logo-256.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/site.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+
+<div id="loader" aria-hidden="true">
+  <div class="ld-in">
+    <img src="assets/logo-256.png" alt="" class="ld-logo">
+    <div class="ld-bar"><i id="ldFill"></i></div>
+    <p id="ldTxt">Aquecendo a cera…</p>
+  </div>
+</div>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="vinheta" aria-hidden="true"></div>
+
+<header class="top" id="top">
+  <a href="#inicio" class="marca" aria-label="Moldes e Art, início">
+    <img src="assets/logo-256.png" alt="">
+    <span>Moldes e <b>Art</b></span>
+  </a>
+  <nav class="menu" aria-label="Seções">
+    <a href="#processo">Do molde à peça</a>
+    <a href="#materiais">Materiais</a>
+    <a href="#catalogo">Catálogo</a>
+    <a href="#sob-medida">Sob medida</a>
+  </nav>
+  <a href="#catalogo" class="bt bt-sec sm so-cel">Catálogo</a>
+  <a class="bt bt-zap sm" data-zap="Olá! Vim pelo site da Moldes e Art e quero saber mais sobre os moldes." href="#" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg>
+    <span>WhatsApp</span>
+  </a>
+</header>
+
+<main>
+
+  <!-- 1. HERO -->
+  <section class="sec hero" id="inicio" data-cena="hero">
+    <div class="wrap">
+      <p class="eyebrow"><i></i>Moldes de silicone · Brasília · Envio para todo o Brasil</p>
+      <h1 class="h-hero">Formas que<br><em>inspiram.</em></h1>
+      <p class="lede">Moldes de silicone prontos e sob medida para quem vive de criar: velas, sabonetes, resina, gesso e concreto.</p>
+      <div class="ctas">
+        <a href="#catalogo" class="bt bt-pri">Ver catálogo</a>
+        <a href="#sob-medida" class="bt bt-sec">Quero um molde sob medida</a>
+      </div>
+    </div>
+    <div class="dica" id="dicaChama"><span class="pulso"></span>Toque na chama</div>
+    <div class="rolar" aria-hidden="true"><span>Role</span><i></i></div>
+  </section>
+
+  <!-- 2. DO MOLDE À PEÇA (scroll pinado) -->
+  <section class="sec processo" id="processo" data-cena="molde">
+    <div class="pin">
+      <div class="wrap processo-in">
+        <p class="eyebrow"><i></i>Do molde à peça</p>
+        <h2 class="h2">O negativo vira <em>positivo.</em></h2>
+        <ol class="passos" id="passos">
+          <li data-p="0"><b>01</b><div><strong>O molde</strong><span>Silicone de alta fidelidade, que copia cada detalhe da peça original.</span></div></li>
+          <li data-p="1"><b>02</b><div><strong>Despeje</strong><span>Cera, sabão, resina, gesso ou concreto. O mesmo molde serve para vários materiais.</span></div></li>
+          <li data-p="2"><b>03</b><div><strong>Desenforme</strong><span>A peça sai inteira, com o detalhe nítido, pronta para vender.</span></div></li>
+        </ol>
+        <div class="barra-proc"><i id="barraProc"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. MATERIAIS (interativo) -->
+  <section class="sec materiais" id="materiais" data-cena="materiais">
+    <div class="wrap mat-in">
+      <div class="mat-txt">
+        <p class="eyebrow"><i></i>Um molde, cinco materiais</p>
+        <h2 class="h2">Escolha o <em>material.</em></h2>
+        <p class="sub" id="matDesc">Cera de soja ou parafina. O silicone aguenta a temperatura e desenforma sem esforço.</p>
+        <div class="chips" role="group" aria-label="Materiais">
+          <button class="chip on" data-mat="vela" aria-pressed="true">Vela</button>
+          <button class="chip" data-mat="sabonete" aria-pressed="false">Sabonete</button>
+          <button class="chip" data-mat="resina" aria-pressed="false">Resina</button>
+          <button class="chip" data-mat="gesso" aria-pressed="false">Gesso</button>
+          <button class="chip" data-mat="concreto" aria-pressed="false">Concreto</button>
+        </div>
+        <p class="dica-in">Arraste a peça para girar.</p>
+      </div>
+      <div class="mat-palco" id="matPalco" aria-label="Peça 3D, arraste para girar"></div>
+    </div>
+  </section>
+
+  <!-- 4. CATÁLOGO -->
+  <section class="sec catalogo" id="catalogo" data-cena="catalogo">
+    <div class="wrap">
+      <div class="cat-topo">
+        <div>
+          <p class="eyebrow"><i></i>Catálogo</p>
+          <h2 class="h2">Escolha o seu <em>molde.</em></h2>
+          <p class="sub">Toque na foto para ampliar. Gostou? Peça direto no WhatsApp com o código do molde.</p>
+        </div>
+        <label class="busca">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="busca" type="search" aria-label="Buscar molde" placeholder="Buscar (ex.: rosa, santo, natal)">
+        </label>
+      </div>
+      <div class="cats" id="cats" role="group" aria-label="Categorias"></div>
+      <div class="grade" id="grade" aria-live="polite"></div>
+      <div class="mais-wrap"><button class="bt bt-sec" id="maisBtn" hidden>Ver mais moldes</button></div>
+    </div>
+  </section>
+
+  <!-- 5. SOB MEDIDA -->
+  <section class="sec sobmedida" id="sob-medida" data-cena="sobmedida">
+    <div class="wrap sm-in">
+      <div>
+        <p class="eyebrow"><i></i>Molde sob medida</p>
+        <h2 class="h2">Sua ideia vira <em>molde.</em></h2>
+        <p class="sub">Logo da sua marca, nome de bebê, peça de família, brinde de evento. A gente modela, faz o molde e envia para você.</p>
+        <ol class="etapas">
+          <li><b>1</b><span>Você manda a ideia, foto ou peça de referência</span></li>
+          <li><b>2</b><span>A gente modela e passa o orçamento</span></li>
+          <li><b>3</b><span>Produzimos o molde em silicone</span></li>
+          <li><b>4</b><span>Enviamos para qualquer lugar do Brasil</span></li>
+        </ol>
+      </div>
+      <form class="form-sm" id="formSm" novalidate>
+        <h3>Monte seu pedido</h3>
+        <label for="fNome">Seu nome</label>
+        <input id="fNome" name="nome" type="text" autocomplete="name" placeholder="Como podemos te chamar?">
+        <label for="fIdeia">O que você quer moldar?</label>
+        <textarea id="fIdeia" name="ideia" rows="3" placeholder="Ex.: logo da minha loja em formato de sabonete, 6 cm"></textarea>
+        <div class="duas">
+          <div>
+            <label for="fMat">Material</label>
+            <select id="fMat" name="material">
+              <option>Vela</option><option>Sabonete</option><option>Resina</option><option>Gesso</option><option>Concreto</option><option>Ainda não sei</option>
+            </select>
+          </div>
+          <div>
+            <label for="fQtd">Quantos moldes?</label>
+            <input id="fQtd" name="qtd" type="number" min="1" value="1" inputmode="numeric">
+          </div>
+        </div>
+        <div class="duas">
+          <div>
+            <label for="fPecas">Quantas peças vai fazer? <small>(opcional)</small></label>
+            <input id="fPecas" name="pecas" type="text" inputmode="numeric" placeholder="Ex.: 120 lembrancinhas">
+          </div>
+          <div>
+            <label for="fPrazo">Para quando precisa? <small>(opcional)</small></label>
+            <input id="fPrazo" name="prazo" type="text" placeholder="Ex.: 15 de março">
+          </div>
+        </div>
+        <label for="fCidade">Cidade / UF (para o frete)</label>
+        <input id="fCidade" name="cidade" type="text" placeholder="Ex.: Goiânia / GO">
+        <button class="bt bt-zap" type="submit">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Z"/></svg>
+          <span>Enviar pelo WhatsApp</span>
+        </button>
+        <p class="nota" id="notaForm">A mensagem abre pronta no WhatsApp. Depois é só mandar a foto ou o logo na conversa.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- 6. ENVIO BRASIL -->
+  <section class="sec envio" id="envio" data-cena="envio">
+    <div class="wrap centro">
+      <p class="eyebrow"><i></i>De Brasília para o Brasil</p>
+      <h2 class="h2 centro">Enviamos para <em>todos os estados.</em></h2>
+    </div>
+    <div class="estados" aria-hidden="true"><div class="trilho" id="trilho"></div></div>
+    <div class="wrap selos">
+      <div class="selo"><strong>Molde testado</strong><span>Cada molde sai do ateliê conferido, sem bolha e com detalhe nítido.</span></div>
+      <div class="selo"><strong>Embalagem segura</strong><span>Vai protegido para chegar inteiro e pronto para usar.</span></div>
+      <div class="selo"><strong>Atendimento direto</strong><span>Você fala com quem faz o molde, pelo WhatsApp.</span></div>
+    </div>
+  </section>
+
+  <!-- 7. CTA FINAL -->
+  <section class="sec final" id="contato" data-cena="final">
+    <div class="wrap centro">
+      <img src="assets/logo.png" alt="Moldes e Art" class="logo-final">
+      <h2 class="h2">Bora criar a sua <em>próxima peça?</em></h2>
+      <div class="ctas centro">
+        <a class="bt bt-zap" data-zap="Olá! Vim pelo site da Moldes e Art e quero fazer um pedido." href="#" target="_blank" rel="noopener"><span>Chamar no WhatsApp</span></a>
+        <a class="bt bt-sec" href="https://www.instagram.com/moldes.art/" target="_blank" rel="noopener">@moldes.art</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="rodape">
+  <div class="wrap rod-in">
+    <span>© Moldes e Art · Brasília, DF · WhatsApp <a data-zap-num href="#">(61) 99453-8021</a></span>
+    <span>Moldes de silicone para velas, sabonetes, resina, gesso e concreto</span>
+  </div>
+</footer>
+
+<a class="zap-flutuante" data-zap="Olá! Vim pelo site da Moldes e Art." href="#" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg>
+</a>
+
+<div class="lightbox" id="lb" role="dialog" aria-modal="true" aria-label="Foto do molde" hidden>
+  <button class="lb-fechar" id="lbFechar" aria-label="Fechar">×</button>
+  <button class="lb-nav lb-ant" id="lbAnt" aria-label="Anterior">‹</button>
+  <figure>
+    <img id="lbImg" alt="">
+    <figcaption>
+      <div><span id="lbCat"></span><strong id="lbCod"></strong></div>
+      <a class="bt bt-zap" id="lbZap" href="#" target="_blank" rel="noopener"><span>Pedir pelo WhatsApp</span></a>
+    </figcaption>
+  </figure>
+  <button class="lb-nav lb-prox" id="lbProx" aria-label="Próximo">›</button>
+</div>
+
+<script src="js/site.js"></script>
+<script type="module" src="js/cena3d.js"></script>
+
+</body>
+</html>
