@@ -199,9 +199,9 @@
       </div>
 
       <div class="manto__grid">
-        <div class="manto__stage" data-cursor="Arrasta">
+        <div class="manto__stage" data-cursor="Arrasta" role="img" aria-label="Prévia da camisa personalizada">
           <div class="manto__spot"></div>
-          <canvas id="mantoCanvas" role="img" aria-label="Prévia 3D da camisa personalizada"></canvas>
+          <div class="sr-only" id="mantoLive" aria-live="polite"></div>
           <button class="manto__flip" id="mantoFlip" data-magnetic>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span id="mantoFlipLabel">Ver costas</span>

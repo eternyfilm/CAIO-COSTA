@@ -139,19 +139,20 @@ const fragment = /* glsl */ `
   void main() {
     vec2 c = gl_PointCoord - 0.5;
     float d = length(c);
-    float a = smoothstep(0.5, 0.18, d);
-    vec3 deep = vec3(0.26, 0.17, 0.05);
-    vec3 gold = vec3(0.60, 0.42, 0.12);
-    vec3 hi = vec3(0.82, 0.63, 0.27);
+    float a = smoothstep(0.5, 0.3, d);
+    vec3 deep = vec3(0.50, 0.34, 0.11);
+    vec3 gold = vec3(0.76, 0.56, 0.21);
+    vec3 hi = vec3(0.98, 0.85, 0.52);
     vec3 col = mix(deep, gold, smoothstep(0.0, 0.6, vRand));
     col = mix(col, hi, smoothstep(0.8, 1.0, vRand));
+    col = mix(col, hi, smoothstep(0.22, 0.0, d) * 0.5);
     gl_FragColor = vec4(col, a * vAlpha * 0.95);
   }
 `;
 
 export function initHero(canvas, { reduced = false } = {}) {
   const isMobile = matchMedia('(max-width: 720px)').matches;
-  const COUNT = isMobile ? 9000 : 18000;
+  const COUNT = isMobile ? 8000 : 14000;
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' });
   const pr = Math.min(window.devicePixelRatio || 1, 1.75);
@@ -189,7 +190,7 @@ export function initHero(canvas, { reduced = false } = {}) {
   const uniforms = {
     uMorph: { value: 0 },
     uTime: { value: 0 },
-    uSize: { value: isMobile ? 22 : 25 },
+    uSize: { value: isMobile ? 24 : 29 },
     uPR: { value: pr },
     uMouse: { value: new THREE.Vector2(99, 99) },
     uMouseStr: { value: 0 },
@@ -238,6 +239,8 @@ export function initHero(canvas, { reduced = false } = {}) {
 
   let w = 0, h = 0, groupScale = 1, groupY = 0;
   function resize() {
+    const npr = Math.min(window.devicePixelRatio || 1, 1.75);
+    if (npr !== renderer.getPixelRatio()) { renderer.setPixelRatio(npr); uniforms.uPR.value = npr; }
     w = canvas.clientWidth; h = canvas.clientHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
@@ -247,7 +250,7 @@ export function initHero(canvas, { reduced = false } = {}) {
     const visW = visH * camera.aspect;
     const fit = Math.min(visW * 0.82, visH * (isMobile ? 0.62 : 0.56)) / worldScale;
     groupScale = fit;
-    groupY = isMobile ? visH * 0.13 : visH * 0.12;
+    groupY = isMobile ? visH * 0.13 : visH * 0.135;
     group.scale.setScalar(groupScale);
     group.position.y = groupY;
   }

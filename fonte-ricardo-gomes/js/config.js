@@ -11,14 +11,15 @@ export function waLink(msg) {
   return `https://wa.me/${LOJA.whatsapp}?text=${encodeURIComponent(msg)}`;
 }
 
-// Modelos do personalizador 3D
+// Modelos do personalizador: fotos em img/camisas (frente e costas, fundo transparente).
+// gold: estampa em dourado metálico; num: cor da estampa; stroke: contorno; crest: textos pequenos.
+const CAM = (id) => ({ front: `img/camisas/${id}-front.webp`, back: `img/camisas/${id}-back.webp` });
 export const MODELOS = [
-  { id: 'marmore', nome: 'Mármore', base: '#f7f4ee', alt: '#ece7de', trim: '#c69a3e', rib: '#f3efe7', num: '#c69a3e', numStroke: '#4a3814', sponsor: '#9c9488', vein: '#7a7266', veinGold: '#c39b4e', veinSoft: 'rgba(140,130,115,0.12)', padrao: 'marmore', swatch: 'linear-gradient(135deg, #f7f4ee 0 55%, #c69a3e 55% 100%)' },
-  { id: 'canarinho', nome: 'Canarinho', base: '#f6cf1d', alt: '#ecc312', trim: '#0f8a43', rib: '#0f8a43', num: '#0b5a2e', numStroke: '#f6cf1d', sponsor: '#0b5a2e', padrao: 'faixas-sutis' },
-  { id: 'azulao', nome: 'Azulão', base: '#1f43a8', alt: '#173584', trim: '#f6cf1d', rib: '#f6cf1d', num: '#ffffff', numStroke: '#0f2466', sponsor: '#ffffff', padrao: 'gradiente' },
-  { id: 'rubronegro', nome: 'Rubro-negro', base: '#c8102e', alt: '#151515', trim: '#151515', rib: '#151515', num: '#ffffff', numStroke: '#151515', sponsor: '#ffffff', padrao: 'listras' },
-  { id: 'esmeralda', nome: 'Esmeralda', base: '#0f5a5c', alt: '#0c4a4c', trim: '#ffffff', rib: '#ffffff', num: '#ffffff', numStroke: '#0b2c2d', sponsor: '#ffffff', padrao: 'geometrico' },
-  { id: 'fonte', nome: 'Black Gold', base: '#151412', alt: '#1e1c18', trim: '#d4a440', rib: '#d4a440', num: '#e3bf68', numStroke: '#4a3410', sponsor: '#d4a440', padrao: 'diagonal' },
+  { id: 'marmore', nome: 'Mármore', ...CAM('marmore'), gold: true, stroke: '#5a4114', crest: '#a07a2c', sponsor: '#9b8a66', swatch: 'linear-gradient(135deg, #f7f4ee 0 55%, #c9a24f 55% 100%)' },
+  { id: 'azulreal', nome: 'Azul Real', ...CAM('azulreal'), num: '#efe3c4', crest: '#efe3c4', sponsor: '#efe3c4', swatch: 'linear-gradient(135deg, #1f2f73 0 55%, #efe3c4 55% 100%)' },
+  { id: 'canarinho', nome: 'Canarinho', ...CAM('canarinho'), num: '#0d7a3c', crest: '#0d7a3c', sponsor: '#0d7a3c', swatch: 'linear-gradient(135deg, #f7d117 0 55%, #11883f 55% 100%)' },
+  { id: 'rubronegro', nome: 'Rubro-negro', ...CAM('rubronegro'), num: '#ffffff', stroke: '#141414', crest: '#ffffff', sponsor: '#ffffff', swatch: 'repeating-linear-gradient(180deg, #d01b25 0 9px, #141414 9px 18px)' },
+  { id: 'street', nome: 'Preto Street', ...CAM('street'), num: '#f2f2f2', crest: '#f2f2f2', sponsor: '#f2f2f2', swatch: 'linear-gradient(135deg, #1b1b1b 0 55%, #f2f2f2 55% 100%)' },
 ];
 
 // Categorias do scroll horizontal. Para usar foto real, preencha "foto" com o caminho (ex: 'img/kits.jpg').

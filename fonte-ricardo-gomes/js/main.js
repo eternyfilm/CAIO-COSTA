@@ -15,6 +15,8 @@ const mqMobile = matchMedia('(max-width: 720px)');
 const EASE = { out: 'expo.out', inOut: 'expo.inOut', micro: 'power3.out' };
 
 document.body.classList.add('is-loading');
+const preInert = [document.querySelector('main'), document.querySelector('.header'), document.querySelector('.skip')].filter(Boolean);
+preInert.forEach((n) => { n.inert = true; });
 document.getElementById('year').textContent = new Date().getFullYear();
 
 function el(tag, cls, text) {
@@ -44,7 +46,7 @@ function scrollToTarget(target) {
     if (!dest.hasAttribute('tabindex')) dest.setAttribute('tabindex', '-1');
     dest.focus({ preventScroll: true });
   };
-  if (lenis) lenis.scrollTo(dest, { duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 4), onComplete: focusDest });
+  if (lenis) lenis.scrollTo(dest, { duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 4), onComplete: focusDest, force: true });
   else { dest.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' }); focusDest(); }
 }
 $$('a[href^="#"]').forEach((a) => {
@@ -52,18 +54,21 @@ $$('a[href^="#"]').forEach((a) => {
     const id = a.getAttribute('href');
     if (id.length < 2) return;
     e.preventDefault();
-    const wasOpen = document.body.classList.contains('menu-open');
+    const wasOpen = menuIsOpen;
     if (wasOpen) toggleMenu(false, false);
+    if (location.hash !== id) history.pushState(null, '', id);
     setTimeout(() => scrollToTarget(id), wasOpen ? 450 : 0);
   });
 });
+window.addEventListener('popstate', () => scrollToTarget(location.hash || '#inicio'));
+var menuIsOpen = false;
 
 // ---------------- hero ----------------
 // sem WebGL o site continua funcionando, só sem as partículas
 const noop = () => {};
 let hero;
 try { hero = initHero($('#heroCanvas'), { reduced }); }
-catch (err) { console.warn('Partículas desligadas:', err); hero = { setMorph: noop, intro: noop, setRunning: noop }; $('#heroCanvas').remove(); }
+catch (err) { console.warn('Partículas desligadas:', err); hero = { setMorph: noop, intro: noop, setRunning: noop }; $('#heroCanvas').remove(); $('.hero__sticky').classList.add('no-gl'); }
 const states = $$('.hero__state');
 const heroNum = $('#heroNum');
 const heroBar = $('#heroBar');
@@ -98,7 +103,8 @@ ScrollTrigger.create({
   },
 });
 // partículas só desenham com o hero na tela
-new IntersectionObserver(([e]) => hero.setRunning(e.isIntersecting)).observe($('.hero'));
+let heroOnScreen = true;
+new IntersectionObserver(([e]) => { heroOnScreen = e.isIntersecting; hero.setRunning(heroOnScreen && !menuIsOpen); }).observe($('.hero'));
 
 // ---------------- marquee com velocidade do scroll ----------------
 (function marquee() {
@@ -164,19 +170,19 @@ function radioGroup(container, items, onSelect) {
 }
 
 (function manto() {
-  const canvas = $('#mantoCanvas');
+  const stage = $('.manto__stage');
   const flipLabel = $('#mantoFlipLabel');
   const hint = $('#mantoHint');
   let api;
   try {
-    api = initManto(canvas, {
+    api = initManto(stage, {
       reduced,
       onSideChange: (side) => { flipLabel.textContent = side === 'front' ? 'Ver costas' : 'Ver frente'; },
       onDrag: () => hint.classList.add('is-gone'),
     });
   } catch (err) {
     console.warn('Prévia 3D desligada:', err);
-    api = { set: noop, showBack: noop, flip: noop };
+    api = { set: noop, showBack: noop, flip: noop, preload: noop };
     $('.manto__stage').classList.add('is-fallback');
     $('#mantoFlip').hidden = true;
     hint.textContent = 'Seu navegador não mostra a prévia 3D, mas o pedido funciona normal.';
@@ -221,15 +227,18 @@ function radioGroup(container, items, onSelect) {
     update();
   });
 
-  const cleanNome = (v) => v.replace(/[^\p{L} .'-]/gu, '').replace(/ {2,}/g, ' ').toUpperCase().slice(0, 12);
-  const cleanNum = (v) => v.replace(/\D/g, '').slice(0, 2);
+  // só alfabeto latino (a fonte da camisa não tem os outros), acentos preservados
+  const cleanNome = (v) => v.normalize('NFC').replace(/[^\p{Script=Latin} .'-]/gu, '').replace(/ {2,}/g, ' ').slice(0, 12);
+  const cleanNum = (v) => v.replace(/[０-９]/g, (d) => String.fromCharCode(d.charCodeAt(0) - 0xfee0)).replace(/\D/g, '').slice(0, 2);
 
   function update() {
-    const nome = cleanNome(fNome.value).trim();
+    let nome = cleanNome(fNome.value).trim().toLocaleUpperCase('pt-BR').slice(0, 12);
+    if (!/\p{L}/u.test(nome)) nome = '';
     const numero = cleanNum(fNum.value);
     modelName.textContent = modelo.nome;
     api.set({ modelo, nome, numero });
-    canvas.setAttribute('aria-label', `Prévia 3D: camisa ${modelo.nome}, nome ${nome || 'vazio'}, número ${numero || 'vazio'}`);
+    stage.setAttribute('aria-label', `Prévia: camisa ${modelo.nome}, nome ${nome || 'vazio'}, número ${numero || 'vazio'}`);
+    document.fonts?.load(`400 96px Anton`, nome || 'A').then(() => {});
     const nomeMsg = touched.nome ? (nome || 'sem nome') : 'quero definir no atendimento';
     const numMsg = touched.numero ? (numero || 'sem número') : 'quero definir no atendimento';
     const msg = `Olá! Montei meu manto no site da Fonte.\n\nModelo: ${modelo.nome}\nNome: ${nomeMsg}\nNúmero: ${numMsg}\nTamanho: ${tamanho || 'a definir'}\n\nQual o valor e o prazo?`;
@@ -245,12 +254,22 @@ function radioGroup(container, items, onSelect) {
   let raf = 0;
   const schedule = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { update(); api.showBack(); }); };
   fNome.addEventListener('focus', () => fNome.select());
-  fNome.addEventListener('input', () => {
+  const filterNome = () => {
     const v = cleanNome(fNome.value);
-    if (v !== fNome.value) fNome.value = v;
+    if (v === fNome.value) return;
+    // mantém o cursor no lugar ao remover caracteres
+    const pos = fNome.selectionStart ?? v.length;
+    const before = cleanNome(fNome.value.slice(0, pos)).length;
+    fNome.value = v;
+    try { fNome.setSelectionRange(before, before); } catch { /* ok */ }
+  };
+  fNome.addEventListener('input', (e) => {
+    if (e.isComposing) return; // não mexe no texto no meio de um acento/IME
+    filterNome();
     touched.nome = true;
     updHint(); schedule();
   });
+  fNome.addEventListener('compositionend', () => { filterNome(); touched.nome = true; updHint(); schedule(); });
   fNome.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); fNum.focus(); } });
   fNum.addEventListener('focus', () => fNum.select());
   fNum.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); fNum.blur(); } });
@@ -262,7 +281,7 @@ function radioGroup(container, items, onSelect) {
   });
   $$('.num-ctrl button').forEach((b) => b.addEventListener('click', () => {
     const n = Math.min(99, Math.max(0, (parseInt(fNum.value, 10) || 0) + Number(b.dataset.step)));
-    fNum.value = String(n);
+    fNum.value = String(n).padStart(fNum.value.length > 1 ? 2 : 1, '0');
     touched.numero = true;
     update(); api.showBack();
   }));
@@ -272,6 +291,7 @@ function radioGroup(container, items, onSelect) {
   document.fonts?.ready.then(update);
   updHint();
   update();
+  api.preload?.(MODELOS.slice(1));
 })();
 
 // ---------------- drops (scroll horizontal) ----------------
@@ -444,14 +464,14 @@ ScrollTrigger.batch('.reveal-up:not(.hero__meta)', {
   let last = 0;
   const onScroll = (y) => {
     h.classList.toggle('is-solid', y > 40);
-    const keep = document.body.classList.contains('menu-open') || h.contains(document.activeElement);
+    const keep = menuIsOpen || !!h.querySelector(':focus-visible');
     if (!keep) h.classList.toggle('is-hidden', y > last && y > 300);
     last = y;
     // no celular o Zap fica sempre à mão; no desktop aparece depois do hero
     const show = document.body.classList.contains('is-ready') && (mqMobile.matches || y > window.innerHeight * 0.8);
     fab.classList.toggle('is-visible', show);
   };
-  h.addEventListener('focusin', () => h.classList.remove('is-hidden'));
+  h.addEventListener('focusin', () => { if (h.querySelector(':focus-visible')) h.classList.remove('is-hidden'); });
   const busy = new Set();
   new IntersectionObserver((ents) => {
     ents.forEach((e) => (e.isIntersecting ? busy.add(e.target) : busy.delete(e.target)));
@@ -473,12 +493,14 @@ const inertTargets = () => [$('main'), $('.fab'), $('.header__nav'), $('.header 
 let menuTl = null;
 function toggleMenu(open, restoreFocus = true) {
   const body = document.body;
-  const isOpen = open ?? !body.classList.contains('menu-open');
+  const isOpen = open ?? !menuIsOpen;
+  menuIsOpen = isOpen;
   menuBtn.setAttribute('aria-expanded', String(isOpen));
   menuLabel.textContent = isOpen ? 'Fechar menu' : 'Abrir menu';
   $('#menu').setAttribute('aria-hidden', String(!isOpen));
   inertTargets().forEach((n) => { n.inert = isOpen; });
   if (menuTl) menuTl.kill();
+  hero.setRunning(!isOpen && heroOnScreen);
   if (isOpen) {
     body.classList.add('menu-open');
     $('#header').classList.remove('is-hidden');
@@ -490,15 +512,17 @@ function toggleMenu(open, restoreFocus = true) {
     setTimeout(() => $('.menu__links a')?.focus(), 60);
   } else {
     lenis?.start();
-    menuTl = gsap.timeline({ onComplete: () => body.classList.remove('menu-open') })
+    menuTl = gsap.timeline({ onComplete: () => { if (!menuIsOpen) body.classList.remove('menu-open'); } })
       .to('.menu__word', { y: '110%', duration: 0.45, stagger: 0.03, ease: 'expo.in' })
       .to('.menu__num, .menu__foot', { opacity: 0, duration: 0.2 }, 0)
       .to('.menu__bg', { clipPath: 'circle(0% at calc(100% - 46px) 38px)', duration: 0.7, ease: EASE.inOut }, '-=0.15');
     if (restoreFocus) menuBtn.focus();
   }
 }
-menuBtn.addEventListener('click', () => toggleMenu());
-window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && document.body.classList.contains('menu-open')) toggleMenu(false); });
+let menuByKey = false;
+menuBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') menuByKey = true; });
+menuBtn.addEventListener('click', () => { const k = menuByKey; menuByKey = false; toggleMenu(undefined, k); });
+window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menuIsOpen) toggleMenu(false, true); });
 
 // ---------------- cursor ----------------
 if (finePointer) {
@@ -560,6 +584,7 @@ if (finePointer && !reduced) {
   await gsap.to(counter, { v: 100, duration: fast ? 0.05 : 0.2, ease: 'power1.out', onUpdate: show, overwrite: true });
 
   const reveal = () => {
+    preInert.forEach((n) => { n.inert = false; });
     document.body.classList.remove('is-loading');
     document.body.classList.add('is-ready');
     hero.intro(fast ? 1.2 : 2.4);
@@ -578,7 +603,23 @@ if (finePointer && !reduced) {
       .to('.loader', { autoAlpha: 0, duration: 0.01 });
   }
   tl.to('.hero__meta', { opacity: 1, y: 0, duration: 0.9, stagger: 0.1, ease: EASE.out }, '-=0.4')
-    .add(() => lenis?.start(), '-=0.5');
+    .add(() => { if (!menuIsOpen) lenis?.start(); }, '-=0.5');
 })();
 
+let anchor = null;
+const sections = () => $$('main > section, main > footer');
+ScrollTrigger.addEventListener('refreshInit', () => {
+  if (!document.body.classList.contains('is-ready')) return;
+  const y = window.scrollY;
+  const sec = sections().find((n) => { const r = n.getBoundingClientRect(); return r.top <= 1 && r.bottom > 1; });
+  if (!sec) { anchor = null; return; }
+  const st = ScrollTrigger.getAll().find((t) => t.isActive && t.pin && sec.contains(t.trigger));
+  anchor = st ? { st, p: st.progress } : { sec, off: (y - (sec.getBoundingClientRect().top + y)) / Math.max(1, sec.offsetHeight) };
+});
+ScrollTrigger.addEventListener('refresh', () => {
+  if (!anchor) return;
+  const a = anchor; anchor = null;
+  const y = a.st ? a.st.start + (a.st.end - a.st.start) * a.p : a.sec.getBoundingClientRect().top + window.scrollY + a.off * a.sec.offsetHeight;
+  if (lenis) lenis.scrollTo(y, { immediate: true, force: true }); else window.scrollTo(0, y);
+});
 window.addEventListener('load', () => ScrollTrigger.refresh());

@@ -21,7 +21,7 @@ Precisa de servidor (não abre com duplo clique por causa dos módulos JS).
 | Loader | Coroa desenhando + contador 000 a 100 | `index.html`, `js/main.js` |
 | Hero | 18 mil partículas douradas: logo (coroa + cabide) → número 10 → cruz. Mouse/dedo empurra as partículas | `js/hero.js` |
 | Manifesto | Texto acende palavra por palavra no scroll | `js/main.js` |
-| Monte seu manto | Camisa 3D vestida num manequim cromado sobre pedestal de mármore: arrasta pra girar, digita nome e número, troca o modelo. Botão manda tudo pro WhatsApp já preenchido | `js/manto.js` |
+| Monte seu manto | Foto real da camisa (frente e costas) girando em 3D, com nome, número, coroa e patrocínio estampados acompanhando as dobras e a luz do tecido. 5 modelos, escolha de tamanho, botão manda o pedido pronto pro WhatsApp | `js/manto.js`, fotos em `img/camisas/` |
 | A loja | Scroll horizontal com as categorias, cards com tilt 3D | `js/main.js` + `CATEGORIAS` em `js/config.js` |
 | Fé | Versículos e frases correndo em direções opostas | `index.html` |
 | Visite | Endereço, WhatsApp, Instagram | `index.html` |
@@ -34,7 +34,8 @@ Dados da loja (WhatsApp, endereço, link do mapa, modelos de camisa e categorias
 - [ ] **Logo em vetor (SVG).** A coroa + cabide do site foi redesenhada a partir do perfil. Se existir o arquivo original, substituir em `img/coroa.svg` e no `<svg class="brand__mark">` do `index.html`.
 - [ ] **Horário de funcionamento.** Não estava no Instagram, por isso não entrou. Quando tiver, adicionar um card na seção Visite.
 - [ ] **Confirmar endereço completo** (Av. Paranoá, Qd 12, conjunto/loja) e se o pin do Google Maps está certo.
-- [ ] **Modelos do personalizador.** Os 6 modelos são genéricos (Mármore, Canarinho, Azulão, Rubro-negro, Esmeralda, Black Gold). Ajustar pros que a loja realmente personaliza.
+- [ ] **Modelos do personalizador.** Os 5 modelos (Mármore, Azul Real, Canarinho, Rubro-negro, Preto Street) são renders gerados por IA, sem marca de terceiros. Trocar ou somar com fotos reais dos mantos que a loja personaliza: foto de frente e de costas, fundo transparente, 1000x1250, em `img/camisas/` e uma linha em `MODELOS` (`js/config.js`).
+- [ ] **Black Gold** ficou de fora: a geração insistiu em 3 faixas no ombro (padrão Adidas). Refazer quando houver crédito na API de imagem.
 - [ ] **Domínio** e hospedagem.
 
 ## Notas técnicas
@@ -42,6 +43,7 @@ Dados da loja (WhatsApp, endereço, link do mapa, modelos de camisa e categorias
 - Partículas do hero param de renderizar quando a seção sai da tela; a camisa 3D só renderiza quando visível.
 - Mobile usa metade das partículas e pixel ratio limitado.
 - `prefers-reduced-motion` desliga scroll suave e animações longas.
-- Tema claro: off-white quente, mármore e dourado (referência: camisas conceito em mármore e ouro, luz de fim de tarde).
-- A camisa é modelada no próprio código, sem arquivo 3D externo (nada de licença de terceiro): o volume vem de um campo de distância (tronco com peito e cintura, mangas com cava, dobras de repuxo e de cintura) convertido em malha por surface nets. A UV do tronco segue o comprimento de arco, então nome e número não distorcem. A malha é montada só quando a seção se aproxima da tela.
-- Iluminação: céu de fim de tarde gerado em código (reflexo do cromo e do dourado) + sol quente com sombra no pedestal.
+- Tema claro: off-white quente, mármore e dourado.
+- Personalizador sem WebGL: as fotos ficam em canvas, a estampa é desenhada numa camada e aplicada pixel a pixel deslocando pelas dobras e herdando a luz da foto (sombreamento por luminância). O giro é CSS 3D, então funciona em qualquer celular.
+- Segurança: sem terceiros (fontes no próprio site), CSP por meta tag, nada lido da URL entra no HTML. Para cabeçalhos HTTP (frame-ancestors, nosniff, HSTS), configurar em Settings > Headers no Render.
+- Se o JS ou o WebGL falharem, o loader sai sozinho em 7s e o site abre sem os efeitos.
