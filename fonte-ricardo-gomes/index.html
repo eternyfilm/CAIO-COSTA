@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Fonte Ricardo Gomes | A fonte dos kit</title>
+  <meta name="description" content="Fonte Ricardo Gomes, moda masculina no Paranoá DF. Kits, mantos personalizados com nome e número, tênis e moletons. Jesus é o dono do lugar." />
+  <meta name="theme-color" content="#070707" />
+  <meta property="og:title" content="Fonte Ricardo Gomes | A fonte dos kit" />
+  <meta property="og:description" content="Kits, mantos personalizados, tênis e moletons. Av. Paranoá, Qd 12, DF." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="img/coroa.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="is-loading">
+
+  <!-- LOADER -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__inner">
+      <svg class="loader__crown" viewBox="0 0 120 80" fill="none">
+        <path d="M14 66 L8 22 L36 44 L46 10 L60 38 L74 10 L84 44 L112 22 L106 66 Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+        <path d="M14 72 H106" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
+      <div class="loader__count"><span id="loaderCount">000</span></div>
+      <p class="loader__verse">Jesus é o dono do lugar</p>
+    </div>
+    <div class="loader__curtain"></div>
+  </div>
+
+  <!-- CURSOR -->
+  <div class="cursor" aria-hidden="true">
+    <div class="cursor__dot"></div>
+    <div class="cursor__ring"><span class="cursor__label"></span></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header" id="header">
+    <a href="#inicio" class="brand" aria-label="Fonte Ricardo Gomes, início">
+      <svg class="brand__mark" viewBox="0 0 120 96" fill="none" aria-hidden="true">
+        <path d="M30 46 L24 12 L44 28 L52 4 L60 24 L68 4 L76 28 L96 12 L90 46 Z" fill="url(#gGold)"/>
+        <rect x="30" y="50" width="60" height="7" rx="2" fill="url(#gGold)"/>
+        <path d="M38 60 L6 88 H114 L82 60" stroke="url(#gGold)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs>
+          <linearGradient id="gGold" x1="0" y1="0" x2="120" y2="96" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#F6DE97"/><stop offset=".45" stop-color="#D4A440"/><stop offset="1" stop-color="#8A5F1C"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="brand__name">Ricardo Gomes<small>Moda masculina</small></span>
+    </a>
+
+    <nav class="header__nav" aria-label="Seções">
+      <a href="#manto" data-hover>Personalize</a>
+      <a href="#drops" data-hover>A loja</a>
+      <a href="#fe" data-hover>Fé</a>
+      <a href="#fonte" data-hover>Visite</a>
+    </nav>
+
+    <div class="header__actions">
+      <a class="pill pill--gold js-wa" href="#" target="_blank" rel="noopener" data-magnetic data-wa="Olá! Vim pelo site da Fonte e queria atendimento.">
+        <span>Chama no Zap</span>
+      </a>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu" data-magnetic>
+        <span class="menu-btn__lines"><i></i><i></i></span>
+        <span class="sr-only">Abrir menu</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MENU FULLSCREEN -->
+  <div class="menu" id="menu" aria-hidden="true">
+    <div class="menu__bg"></div>
+    <nav class="menu__links">
+      <a href="#inicio"><span class="menu__num">01</span><span class="menu__word">Início</span></a>
+      <a href="#manto"><span class="menu__num">02</span><span class="menu__word">Personalize</span></a>
+      <a href="#drops"><span class="menu__num">03</span><span class="menu__word">A loja</span></a>
+      <a href="#fe"><span class="menu__num">04</span><span class="menu__word">Fé</span></a>
+      <a href="#fonte"><span class="menu__num">05</span><span class="menu__word">Visite</span></a>
+    </nav>
+    <div class="menu__foot">
+      <span>Av. Paranoá, Qd 12, DF</span>
+      <a href="https://instagram.com/fontericardogomes" target="_blank" rel="noopener">@fontericardogomes</a>
+    </div>
+  </div>
+
+  <main id="smooth">
+
+    <!-- HERO: particulas que viram coroa, numero e cruz -->
+    <section class="hero" id="inicio">
+      <div class="hero__sticky">
+        <canvas class="hero__canvas" id="heroCanvas" data-cursor="Mexe"></canvas>
+        <div class="hero__glow"></div>
+
+        <div class="hero__meta hero__meta--tl reveal-up">
+          <span class="dot"></span> Paranoá, DF
+        </div>
+        <div class="hero__meta hero__meta--tr reveal-up">
+          Kits · Mantos · Tênis · Moletons
+        </div>
+
+        <div class="hero__state is-active" data-state="0">
+          <h1 class="hero__title" aria-label="A fonte dos kit">
+            <span class="line"><span class="split">A FONTE</span></span>
+            <span class="line line--right"><span class="split">DOS KIT</span></span>
+          </h1>
+        </div>
+
+        <div class="hero__state" data-state="1">
+          <h2 class="hero__title hero__title--stack">
+            <span class="line"><span>SEU NOME.</span></span>
+            <span class="line"><span class="gold-text">SEU NÚMERO.</span></span>
+            <span class="line"><span>SEU MANTO.</span></span>
+          </h2>
+        </div>
+
+        <div class="hero__state" data-state="2">
+          <h2 class="hero__verse">
+            <span class="line"><span><em>Jesus</em> é o dono</span></span>
+            <span class="line"><span>do lugar.</span></span>
+          </h2>
+        </div>
+
+        <div class="hero__progress" aria-hidden="true">
+          <span class="hero__progress-num"><b id="heroNum">01</b> / 03</span>
+          <span class="hero__progress-bar"><i id="heroBar"></i></span>
+        </div>
+
+        <div class="hero__scroll" aria-hidden="true">
+          <span>Role pra entrar</span>
+          <i></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" id="marquee">
+        <div class="marquee__group">
+          <span>Kits</span><b>✦</b><span>Mantos</span><b>✦</b><span>Tênis</span><b>✦</b><span>Moletons</span><b>✦</b><span>Personalização</span><b>✦</b><span>Infantil</span><b>✦</b>
+        </div>
+        <div class="marquee__group">
+          <span>Kits</span><b>✦</b><span>Mantos</span><b>✦</b><span>Tênis</span><b>✦</b><span>Moletons</span><b>✦</b><span>Personalização</span><b>✦</b><span>Infantil</span><b>✦</b>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANIFESTO -->
+    <section class="manifesto" id="manifesto">
+      <p class="eyebrow reveal-up">( Manifesto )</p>
+      <p class="manifesto__text" id="manifestoText">
+        Aqui não é só roupa. É manto. É o kit que você veste no jogo, no culto e no rolê de sábado. Você escolhe o modelo, a gente coloca seu nome nas costas e você sai da Fonte pronto pra ser visto.
+      </p>
+      <div class="manifesto__foot reveal-up">
+        <span>Desde o Paranoá</span>
+        <span>Pro DF inteiro</span>
+      </div>
+    </section>
+
+    <!-- PERSONALIZADOR 3D -->
+    <section class="manto" id="manto">
+      <div class="manto__head">
+        <p class="eyebrow reveal-up">( 02 / Personalize )</p>
+        <h2 class="section-title reveal-up">Monte seu <span class="gold-text">manto</span></h2>
+      </div>
+
+      <div class="manto__grid">
+        <div class="manto__stage" data-cursor="Arrasta">
+          <div class="manto__spot"></div>
+          <canvas id="mantoCanvas" aria-label="Prévia 3D da camisa personalizada"></canvas>
+          <div class="manto__shadow"></div>
+          <button class="manto__flip" id="mantoFlip" data-magnetic>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="mantoFlipLabel">Ver costas</span>
+          </button>
+          <p class="manto__hint">Arrasta pra girar</p>
+        </div>
+
+        <form class="manto__panel" id="mantoForm" autocomplete="off">
+          <div class="field">
+            <label for="fNome">Nome nas costas</label>
+            <input id="fNome" name="nome" type="text" maxlength="12" placeholder="SEU NOME" value="GOMES" />
+          </div>
+          <div class="field field--num">
+            <label for="fNum">Número</label>
+            <div class="num-ctrl">
+              <button type="button" data-step="-1" aria-label="Diminuir número">−</button>
+              <input id="fNum" name="numero" type="text" inputmode="numeric" maxlength="2" value="10" />
+              <button type="button" data-step="1" aria-label="Aumentar número">+</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="field__label">Modelo <b id="modelName">Edição Fonte</b></span>
+            <div class="swatches" id="swatches" role="radiogroup" aria-label="Modelo da camisa"></div>
+          </div>
+
+          <a class="btn-big js-wa-manto" href="#" target="_blank" rel="noopener" data-magnetic>
+            <span class="btn-big__fill"></span>
+            <span class="btn-big__text">Quero esse manto</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <p class="manto__note">Prévia ilustrativa. Modelo, tamanho e acabamento você fecha direto com a gente no WhatsApp.</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- DROPS: scroll horizontal -->
+    <section class="drops" id="drops">
+      <div class="drops__pin">
+        <div class="drops__head">
+          <p class="eyebrow">( 03 / A loja )</p>
+          <h2 class="section-title">O que tem<br />na <span class="gold-text">Fonte</span></h2>
+          <p class="drops__lead">Chegou coisa nova toda semana. O que você vê aqui é só o começo, o resto tá na loja.</p>
+        </div>
+
+        <div class="drops__track" id="dropsTrack">
+          <!-- cards gerados em js/main.js a partir de CATEGORIAS -->
+        </div>
+
+        <div class="drops__progress" aria-hidden="true"><i id="dropsBar"></i></div>
+      </div>
+    </section>
+
+    <!-- FÉ -->
+    <section class="fe" id="fe">
+      <div class="fe__head">
+        <p class="eyebrow reveal-up">( 04 / Fé que se veste )</p>
+        <h2 class="section-title reveal-up">A Palavra<br />na <span class="gold-text">estampa</span></h2>
+      </div>
+
+      <div class="fe__lines">
+        <div class="fe__line" data-dir="1">
+          <p>“Mil cairão ao teu lado, dez mil à tua direita, mas tu não serás atingido.” <cite>Salmos 91:7</cite></p>
+        </div>
+        <div class="fe__line fe__line--outline" data-dir="-1">
+          <p>Quem tem Deus não conta com a sorte</p>
+        </div>
+        <div class="fe__line" data-dir="1">
+          <p>“Aquele que habita no esconderijo do Altíssimo, à sombra do Onipotente descansará.” <cite>Salmos 91:1</cite></p>
+        </div>
+        <div class="fe__line fe__line--outline" data-dir="-1">
+          <p>O passo que você tem medo de dar pode ser o que vai mudar tudo</p>
+        </div>
+      </div>
+
+      <p class="fe__foot reveal-up">Quer sua frase numa camisa? A gente estampa.</p>
+    </section>
+
+    <!-- VISITE -->
+    <section class="fonte" id="fonte">
+      <div class="fonte__big" aria-hidden="true">
+        <span class="split-big">VEM PRA</span>
+        <span class="split-big gold-text">FONTE</span>
+      </div>
+
+      <div class="fonte__grid">
+        <div class="fonte__card reveal-up">
+          <p class="fonte__label">Endereço</p>
+          <p class="fonte__value">Av. Paranoá, Qd 12<br />Paranoá, DF</p>
+          <a class="link-arrow js-map" href="#" target="_blank" rel="noopener" data-hover>Abrir no mapa <span>↗</span></a>
+        </div>
+        <div class="fonte__card reveal-up">
+          <p class="fonte__label">WhatsApp</p>
+          <p class="fonte__value js-phone">(61) 98320-5214</p>
+          <a class="link-arrow js-wa" href="#" target="_blank" rel="noopener" data-wa="Olá! Vim pelo site da Fonte e queria atendimento." data-hover>Mandar mensagem <span>↗</span></a>
+        </div>
+        <div class="fonte__card reveal-up">
+          <p class="fonte__label">Instagram</p>
+          <p class="fonte__value">@fontericardogomes</p>
+          <a class="link-arrow" href="https://instagram.com/fontericardogomes" target="_blank" rel="noopener" data-hover>Ver o feed <span>↗</span></a>
+        </div>
+      </div>
+
+      <a class="orb js-wa" href="#" target="_blank" rel="noopener" data-wa="Olá! Vim pelo site da Fonte e queria atendimento." data-magnetic data-cursor="Bora">
+        <span class="orb__ring"></span>
+        <span class="orb__text">Chama<br />no Zap</span>
+      </a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer__top">
+        <p class="footer__verse">Jesus é o dono do lugar</p>
+        <a href="#inicio" class="footer__up" data-hover>Voltar pro topo ↑</a>
+      </div>
+      <div class="footer__wordmark" aria-hidden="true">
+        <span>RICARDO</span><span class="gold-text">GOMES</span>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span id="year">2026</span> Ricardo Gomes Moda Masculina</span>
+        <span>Paranoá · Distrito Federal</span>
+      </div>
+    </footer>
+  </main>
+
+  <!-- WhatsApp flutuante (mobile) -->
+  <a class="fab js-wa" href="#" target="_blank" rel="noopener" data-wa="Olá! Vim pelo site da Fonte e queria atendimento." aria-label="Falar no WhatsApp">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3Zm0 23.7c-2 0-4-.5-5.7-1.6l-.4-.2-3.9 1 1-3.8-.3-.4A10.7 10.7 0 1 1 16 26.7Zm5.9-8c-.3-.2-1.9-1-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.8 8.8 0 0 1-4.4-3.8c-.3-.6.3-.5 1-1.8.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.2 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4Z"/></svg>
+  </a>
+
+  <noscript><style>.loader{display:none}body.is-loading{overflow:auto}</style></noscript>
+
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script src="vendor/lenis.min.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three.module.js" } }
+  </script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
