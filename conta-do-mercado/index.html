@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conta do Mercado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: resumo fixo no topo (tenho / gastei / sobra + barra), formulário de item, lista de itens abaixo. */
+:root {
+  --bg: #f3f6f4;
+  --surface: #ffffff;
+  --ink: #14261d;
+  --muted: #5b6e63;
+  --line: #d9e2dc;
+  --accent: #0f7a55;
+  --accent-ink: #ffffff;
+  --ok: #0f7a55;
+  --warn: #b86e00;
+  --bad: #c0302b;
+  --ok-bg: #e0f2ea;
+  --warn-bg: #fdf0d6;
+  --bad-bg: #fbe3e1;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+  --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1713;
+    --surface: #17231d;
+    --ink: #eaf3ee;
+    --muted: #93a99c;
+    --line: #2a3a31;
+    --accent: #3dc995;
+    --accent-ink: #072015;
+    --ok: #3dc995;
+    --warn: #f0b24a;
+    --bad: #ff7a73;
+    --ok-bg: #12352a;
+    --warn-bg: #3a2b0e;
+    --bad-bg: #3d1a18;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1713;
+  --surface: #17231d;
+  --ink: #eaf3ee;
+  --muted: #93a99c;
+  --line: #2a3a31;
+  --accent: #3dc995;
+  --accent-ink: #072015;
+  --ok: #3dc995;
+  --warn: #f0b24a;
+  --bad: #ff7a73;
+  --ok-bg: #12352a;
+  --warn-bg: #3a2b0e;
+  --bad-bg: #3d1a18;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.35;
+  -webkit-text-size-adjust: 100%;
+}
+.wrap { max-width: 520px; margin: 0 auto; padding: 0 16px 48px; }
+
+/* resumo */
+.summary {
+  position: sticky; top: 0; z-index: 5;
+  margin: 0 -16px; padding: 14px 16px 14px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.state-ok { --state: var(--ok); --state-bg: var(--ok-bg); }
+.state-warn { --state: var(--warn); --state-bg: var(--warn-bg); }
+.state-bad { --state: var(--bad); --state-bg: var(--bad-bg); }
+
+.sobra-card {
+  background: var(--state-bg);
+  border-radius: 18px;
+  padding: 14px 16px 16px;
+}
+.sobra-label { font-size: 15px; font-weight: 700; color: var(--state); letter-spacing: .01em; }
+.sobra-value {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 46px; line-height: 1.05; color: var(--state);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+.bar { height: 12px; border-radius: 99px; background: rgba(0,0,0,.09); margin-top: 12px; overflow: hidden; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bar { background: rgba(255,255,255,.12); } }
+:root[data-theme="dark"] .bar { background: rgba(255,255,255,.12); }
+.bar > i { display: block; height: 100%; width: 0; background: var(--state); border-radius: 99px; transition: width .25s ease; }
+.msg { margin: 10px 0 0; font-size: 16px; font-weight: 500; color: var(--state); }
+
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; min-width: 0; }
+.box label, .box .k { display: block; font-size: 14px; color: var(--muted); font-weight: 500; }
+.box .v { font-family: var(--font-display); font-weight: 800; font-size: 24px; font-variant-numeric: tabular-nums; }
+.money-in { display: flex; align-items: baseline; gap: 4px; }
+.money-in span { font-family: var(--font-display); font-weight: 800; font-size: 24px; color: var(--muted); }
+.money-in input {
+  width: 100%; min-width: 0; border: 0; background: transparent; color: var(--ink); outline: none;
+  font-family: var(--font-display); font-weight: 800; font-size: 24px; padding: 0;
+  font-variant-numeric: tabular-nums;
+}
+.box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+
+/* adicionar */
+h2 { font-family: var(--font-display); font-size: 20px; margin: 22px 0 10px; font-weight: 800; }
+form.add { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px; display: grid; gap: 12px; }
+.field label { display: block; font-size: 14px; font-weight: 500; color: var(--muted); margin-bottom: 4px; }
+.field input[type="text"] {
+  width: 100%; height: 52px; border-radius: 12px; border: 1.5px solid var(--line);
+  background: var(--bg); color: var(--ink); font: inherit; font-size: 20px; padding: 0 14px;
+}
+.field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+.row2 { display: grid; grid-template-columns: 1.15fr 1fr; gap: 12px; }
+.stepper { display: flex; align-items: center; height: 52px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--bg); overflow: hidden; }
+.stepper button { width: 48px; height: 100%; border: 0; background: transparent; color: var(--accent); font-size: 28px; font-weight: 700; cursor: pointer; }
+.stepper output { flex: 1; text-align: center; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.preview { font-size: 15px; color: var(--muted); min-height: 1.35em; font-variant-numeric: tabular-nums; }
+.preview b { color: var(--ink); }
+.btn-main {
+  height: 56px; border: 0; border-radius: 14px; background: var(--accent); color: var(--accent-ink);
+  font: inherit; font-weight: 700; font-size: 19px; cursor: pointer;
+}
+.btn-main:active { transform: scale(.98); }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* lista */
+.list-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.list-head small { color: var(--muted); font-size: 15px; }
+ul.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.item { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px 10px 10px 14px; display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; }
+.item .name { font-weight: 700; overflow-wrap: anywhere; }
+.item .calc { color: var(--muted); font-size: 15px; font-variant-numeric: tabular-nums; }
+.item .tot { font-family: var(--font-display); font-weight: 800; font-size: 20px; text-align: right; font-variant-numeric: tabular-nums; }
+.item .ctrl { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+.mini { display: inline-flex; align-items: center; border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; }
+.mini button { width: 44px; height: 40px; border: 0; background: transparent; color: var(--accent); font-size: 22px; font-weight: 700; cursor: pointer; }
+.mini output { min-width: 34px; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+.del { height: 40px; padding: 0 12px; border: 0; background: transparent; color: var(--bad); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; border-radius: 10px; }
+.empty { text-align: center; color: var(--muted); padding: 22px 12px; border: 1.5px dashed var(--line); border-radius: 14px; font-size: 16px; }
+.clear { margin-top: 18px; width: 100%; height: 48px; border-radius: 12px; border: 1.5px solid var(--line); background: transparent; color: var(--muted); font: inherit; font-size: 16px; font-weight: 500; cursor: pointer; }
+.clear.armed { border-color: var(--bad); color: var(--bad); font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } .btn-main:active { transform: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="summary state-ok" id="summary" aria-live="polite">
+    <div class="sobra-card">
+      <div class="sobra-label" id="sobraLabel">Ainda pode gastar</div>
+      <div class="sobra-value" id="sobraValue">R$ 0,00</div>
+      <div class="bar" role="progressbar" aria-label="Quanto do dinheiro já foi gasto" aria-valuemin="0" aria-valuemax="100" id="barWrap"><i id="barFill"></i></div>
+      <p class="msg" id="msg">Digite quanto você tem pra gastar.</p>
+    </div>
+    <div class="pair">
+      <div class="box">
+        <label for="budget">Tenho pra gastar</label>
+        <div class="money-in"><span>R$</span><input id="budget" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"></div>
+      </div>
+      <div class="box">
+        <span class="k">No carrinho</span>
+        <div class="v" id="spent">R$ 0,00</div>
+      </div>
+    </div>
+  </section>
+
+  <h2>Pôr no carrinho</h2>
+  <form class="add" id="addForm" autocomplete="off">
+    <div class="field">
+      <label for="name">O que é (pode deixar em branco)</label>
+      <input id="name" type="text" placeholder="Ex: arroz, leite, sabão" enterkeyhint="next">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="price">Preço de cada</label>
+        <input id="price" type="text" inputmode="decimal" placeholder="R$ 0,00" enterkeyhint="done">
+      </div>
+      <div class="field">
+        <label id="qtyLabel">Quantidade</label>
+        <div class="stepper" role="group" aria-labelledby="qtyLabel">
+          <button type="button" id="qMinus" aria-label="Diminuir quantidade">&minus;</button>
+          <output id="qty" aria-live="polite">1</output>
+          <button type="button" id="qPlus" aria-label="Aumentar quantidade">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="preview" id="preview"></div>
+    <button class="btn-main" type="submit">Adicionar ao carrinho</button>
+  </form>
+
+  <div class="list-head">
+    <h2>Seu carrinho</h2>
+    <small id="count"></small>
+  </div>
+  <ul class="items" id="items"></ul>
+  <button class="clear" id="clear" type="button">Começar uma compra nova</button>
+</div>
+
+<script>
+(function () {
+  var KEY = "conta-do-mercado-v1";
+  var state = { budget: 0, items: [] };
+  var qty = 1;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) {
+        var s = JSON.parse(raw);
+        if (s && Array.isArray(s.items)) {
+          state.budget = Number(s.budget) || 0;
+          state.items = s.items.filter(function (i) { return i && isFinite(i.price) && isFinite(i.qty); });
+        }
+      }
+    } catch (e) {}
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function parseMoney(str) {
+    if (!str) return 0;
+    var s = String(str).replace(/[^\d,.]/g, "");
+    if (s.indexOf(",") > -1) s = s.replace(/\./g, "").replace(",", ".");
+    var n = parseFloat(s);
+    return isFinite(n) && n > 0 ? Math.round(n * 100) / 100 : 0;
+  }
+  function total() {
+    var cents = 0;
+    state.items.forEach(function (i) { cents += Math.round(i.price * 100) * i.qty; });
+    return cents / 100;
+  }
+
+  function renderSummary() {
+    var spent = total();
+    var left = Math.round((state.budget - spent) * 100) / 100;
+    var pct = state.budget > 0 ? Math.min(100, (spent / state.budget) * 100) : 0;
+    var cls = "state-ok", label = "Ainda pode gastar", msg;
+
+    if (state.budget <= 0) {
+      msg = "Digite quanto você tem pra gastar.";
+      pct = 0;
+    } else if (left < 0) {
+      cls = "state-bad"; label = "Passou do limite em";
+      msg = "Tire alguma coisa do carrinho antes de ir pro caixa.";
+    } else if (pct >= 85) {
+      cls = "state-warn";
+      msg = "Cuidado, está acabando. Só item que precisa.";
+    } else if (pct >= 60) {
+      msg = "Mais da metade já foi. Segue com atenção.";
+    } else {
+      msg = state.items.length ? "Tranquilo, está sobrando bastante." : "Pode começar a pôr os itens.";
+    }
+    var sum = $("summary");
+    sum.className = "summary " + cls;
+    $("sobraLabel").textContent = label;
+    $("sobraValue").textContent = brl.format(Math.abs(left < 0 ? left : (state.budget > 0 ? left : 0)));
+    $("barFill").style.width = pct + "%";
+    $("barWrap").setAttribute("aria-valuenow", Math.round(pct));
+    $("msg").textContent = msg;
+    $("spent").textContent = brl.format(spent);
+  }
+
+  function renderList() {
+    var ul = $("items");
+    ul.textContent = "";
+    var units = 0;
+    state.items.forEach(function (i) { units += i.qty; });
+    $("count").textContent = state.items.length
+      ? state.items.length + (state.items.length === 1 ? " item, " : " itens, ") + units + (units === 1 ? " unidade" : " unidades")
+      : "";
+
+    if (!state.items.length) {
+      var e = document.createElement("li");
+      e.className = "empty";
+      e.textContent = "Nada no carrinho ainda. Lance cada item aqui antes de pegar o próximo.";
+      ul.appendChild(e);
+    }
+    state.items.slice().reverse().forEach(function (it) {
+      var li = document.createElement("li");
+      li.className = "item";
+
+      var left = document.createElement("div");
+      var nm = document.createElement("div");
+      nm.className = "name";
+      nm.textContent = it.name || "Item sem nome";
+      var calc = document.createElement("div");
+      calc.className = "calc";
+      calc.textContent = it.qty + " x " + brl.format(it.price);
+      left.appendChild(nm); left.appendChild(calc);
+
+      var tot = document.createElement("div");
+      tot.className = "tot";
+      tot.textContent = brl.format(Math.round(it.price * 100) * it.qty / 100);
+
+      var ctrl = document.createElement("div");
+      ctrl.className = "ctrl";
+      var mini = document.createElement("div");
+      mini.className = "mini";
+      var m = document.createElement("button");
+      m.type = "button"; m.innerHTML = "&minus;"; m.setAttribute("aria-label", "Diminuir " + (it.name || "item"));
+      var o = document.createElement("output");
+      o.textContent = it.qty;
+      var p = document.createElement("button");
+      p.type = "button"; p.textContent = "+"; p.setAttribute("aria-label", "Aumentar " + (it.name || "item"));
+      m.addEventListener("click", function () { if (it.qty > 1) { it.qty--; commit(); } });
+      p.addEventListener("click", function () { if (it.qty < 99) { it.qty++; commit(); } });
+      mini.appendChild(m); mini.appendChild(o); mini.appendChild(p);
+
+      var d = document.createElement("button");
+      d.type = "button"; d.className = "del"; d.textContent = "Tirar do carrinho";
+      d.addEventListener("click", function () {
+        state.items = state.items.filter(function (x) { return x.id !== it.id; });
+        commit();
+      });
+      ctrl.appendChild(mini); ctrl.appendChild(d);
+
+      li.appendChild(left); li.appendChild(tot); li.appendChild(ctrl);
+      ul.appendChild(li);
+    });
+  }
+
+  function commit() { save(); renderSummary(); renderList(); }
+
+  function renderPreview() {
+    var price = parseMoney($("price").value);
+    var pv = $("preview");
+    pv.textContent = "";
+    if (price > 0) {
+      var t = Math.round(price * 100) * qty / 100;
+      pv.appendChild(document.createTextNode(qty + " x " + brl.format(price) + " = "));
+      var b = document.createElement("b");
+      b.textContent = brl.format(t);
+      pv.appendChild(b);
+    }
+  }
+  function setQty(n) {
+    qty = Math.max(1, Math.min(99, n));
+    $("qty").textContent = qty;
+    renderPreview();
+  }
+
+  $("budget").addEventListener("input", function () {
+    state.budget = parseMoney(this.value);
+    save(); renderSummary();
+  });
+  $("price").addEventListener("input", renderPreview);
+  $("qMinus").addEventListener("click", function () { setQty(qty - 1); });
+  $("qPlus").addEventListener("click", function () { setQty(qty + 1); });
+
+  $("addForm").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var price = parseMoney($("price").value);
+    if (!price) { $("price").focus(); return; }
+    state.items.push({
+      id: Date.now() + Math.random(),
+      name: $("name").value.trim().slice(0, 60),
+      price: price,
+      qty: qty
+    });
+    $("name").value = ""; $("price").value = "";
+    setQty(1);
+    commit();
+    $("name").focus();
+  });
+
+  var armTimer;
+  $("clear").addEventListener("click", function () {
+    var b = this;
+    if (!b.classList.contains("armed")) {
+      b.classList.add("armed");
+      b.textContent = "Toque de novo para esvaziar o carrinho";
+      armTimer = setTimeout(reset, 4000);
+      return;
+    }
+    clearTimeout(armTimer);
+    state.items = [];
+    reset();
+    commit();
+  });
+  function reset() {
+    var b = $("clear");
+    b.classList.remove("armed");
+    b.textContent = "Começar uma compra nova";
+  }
+
+  load();
+  if (state.budget > 0) $("budget").value = String(state.budget).replace(".", ",");
+  renderSummary();
+  renderList();
+})();
+</script>
+</body>
+</html>
