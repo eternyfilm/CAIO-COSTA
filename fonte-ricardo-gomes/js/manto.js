@@ -1,9 +1,9 @@
 // Personalizador 3D: camisa modelada em volume (tronco, mangas, dobras),
-// vestida num manequim cromado sobre pedestal de mármore.
+// flutuando no estilo manequim invisível, com gola e mangas abertas.
 // A malha é gerada por um campo de distância (SDF) + surface nets, então
 // não depende de modelo 3D externo. Nome, número e modelo são desenhados
 // na textura em tempo real.
-import * as THREE from 'three';
+import * as THREE from '../vendor/three.module.js';
 
 // ---------------------------------------------------------------- util
 const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
@@ -31,28 +31,28 @@ function rng(seed) {
 }
 
 // ---------------------------------------------------------------- forma da camisa
-const Y0 = -1.36, Y1 = 1.3;           // faixa vertical da textura do tronco
-const Y_HEM = -1.3;
-const KA = [[-1.3, 0.83], [-0.55, 0.785], [0.2, 0.88], [0.62, 0.9], [0.98, 0.86], [1.26, 0.58]];
-const KBF = [[-1.3, 0.46], [-0.55, 0.43], [0.25, 0.53], [0.7, 0.47], [1.0, 0.37], [1.26, 0.24]];
-const KBB = [[-1.3, 0.42], [-0.55, 0.40], [0.25, 0.44], [0.7, 0.43], [1.0, 0.35], [1.26, 0.24]];
+const Y0 = -1.62, Y1 = 1.3;           // faixa vertical da textura do tronco
+const Y_HEM = -1.56;
+const KA = [[-1.56, 0.8], [-0.6, 0.775], [0.2, 0.835], [0.62, 0.86], [0.98, 0.84], [1.26, 0.56]];
+const KBF = [[-1.56, 0.42], [-0.6, 0.41], [0.25, 0.48], [0.7, 0.46], [1.0, 0.43], [1.26, 0.38]];
+const KBB = [[-1.56, 0.39], [-0.6, 0.38], [0.25, 0.41], [0.7, 0.41], [1.0, 0.4], [1.26, 0.36]];
 const NSE = 2.5;
 
 function prof(y) {
   const yc = clamp(y, Y_HEM, 1.26);
-  return { a: keyed(KA, yc), bF: keyed(KBF, yc), bB: keyed(KBB, yc), r: lerp(0.045, 0.15, sstep(-0.4, 0.7, y)) };
+  return { a: keyed(KA, yc), bF: keyed(KBF, yc), bB: keyed(KBB, yc), r: lerp(0.045, 0.2, sstep(-0.4, 0.8, y)) };
 }
 
-const D40 = new THREE.Vector3(Math.cos(0.7), -Math.sin(0.7), 0.02).normalize();
+const D40 = new THREE.Vector3(Math.cos(0.56), -Math.sin(0.56), 0.02).normalize();
 const SLEEVES = [-1, 1].map((s) => {
-  const A = new THREE.Vector3(s * 0.72, 0.73, 0);
+  const A = new THREE.Vector3(s * 0.7, 0.7, 0);
   const d = D40.clone(); d.x *= s;
-  const L = 0.74;
+  const L = 0.6;
   const B = A.clone().addScaledVector(d, L);
   const up = new THREE.Vector3(0, 1, 0);
   const e1 = up.clone().addScaledVector(d, -up.dot(d)).normalize();
   const e2 = new THREE.Vector3().crossVectors(d, e1);
-  return { s, A, B, d, L, e1, e2, ra: 0.245, rb: 0.2 };
+  return { s, A, B, d, L, e1, e2, ra: 0.255, rb: 0.24 };
 });
 
 function sdCappedCone(px, py, pz, A, B, ra, rb) {
@@ -78,7 +78,7 @@ function torsoSD(x, y, z, P) {
   const a2 = P.a - r, b2 = (z > 0 ? P.bF : P.bB) - r;
   const k = Math.pow(Math.pow(Math.abs(x) / a2, NSE) + Math.pow(Math.abs(z) / b2, NSE), 1 / NSE);
   const d2 = (k - 1) * Math.min(a2, b2);
-  const yTop = 1.2 - 0.27 * sstep(0.2, 0.84, Math.abs(x)) - r;
+  const yTop = 1.12 - 0.22 * sstep(0.24, 0.84, Math.abs(x)) - 0.07 * sstep(0.02, 0.24, z) * (1 - sstep(0.2, 0.45, Math.abs(x))) - r;
   const dy = Math.max(y - yTop, Y_HEM + r - y);
   return Math.hypot(Math.max(d2, 0), Math.max(dy, 0)) + Math.min(Math.max(d2, dy), 0) - r;
 }
@@ -94,6 +94,11 @@ function sleeveSD(x, y, z, S) {
   return d;
 }
 
+const NECK_RX = 0.27, NECK_RZ = 0.225, NECK_FLOOR = 0.8;
+function neckHole(x, y, z) {
+  const dn = (Math.hypot(x / NECK_RX, (z - 0.02) / NECK_RZ) - 1) * 0.21;
+  return Math.max(dn, NECK_FLOOR - y);
+}
 function shirtSD(x, y, z, P) {
   let d = torsoSD(x, y, z, P);
   for (const S of SLEEVES) d = smin(d, sleeveSD(x, y, z, S), 0.09);
@@ -105,9 +110,11 @@ function shirtSD(x, y, z, P) {
   const wFront = sstep(0.12, 0.32, Math.abs(z));
   d -= 0.011 * Math.sin(ang * 8 + 0.6) * sstep(0.06, 0.24, rr) * sstep(0.85, 0.35, rr) * wFront;
   // cintura: dobras suaves horizontais
-  d -= 0.008 * Math.sin(y * 15 + 1.4 * Math.sin(x * 4 + z * 3)) * sstep(-0.25, -0.95, y) * sstep(-1.32, -1.16, y);
+  d -= 0.008 * Math.sin(y * 15 + 1.4 * Math.sin(x * 4 + z * 3)) * sstep(-0.25, -0.95, y) * sstep(-1.58, -1.42, y);
   // ondulação geral do tecido
   d -= 0.005 * Math.sin(x * 3.7 + y * 2.1) * Math.sin(y * 3.3 - z * 4.4 + x);
+  // abre a gola (estilo manequim invisível)
+  d = Math.max(d, -neckHole(x, y, z));
   return d;
 }
 
@@ -235,7 +242,7 @@ function sleeveUV(x, y, z, S) {
 }
 
 function buildShirtGeometry(cell) {
-  const { pos, tris } = surfaceNets([-1.62, -1.38, -0.64], [1.62, 1.32, 0.66], cell);
+  const { pos, tris } = surfaceNets([-1.6, -1.64, -0.6], [1.6, 1.32, 0.62], cell);
   const nV = pos.length / 3;
   // normais pelo gradiente do campo
   const nrm = new Float32Array(nV * 3);
@@ -250,13 +257,14 @@ function buildShirtGeometry(cell) {
     nrm[i * 3] = gx / l; nrm[i * 3 + 1] = gy / l; nrm[i * 3 + 2] = gz / l;
   }
   // separa tronco e mangas, com UV próprio e costura tratada
-  const groups = [[], []];
+  const groups = [[], [], []];
   for (let t = 0; t < tris.length; t += 3) {
     const a = tris[t], b = tris[t + 1], c = tris[t + 2];
     const mx = (pos[a * 3] + pos[b * 3] + pos[c * 3]) / 3;
     const my = (pos[a * 3 + 1] + pos[b * 3 + 1] + pos[c * 3 + 1]) / 3;
     const mz = (pos[a * 3 + 2] + pos[b * 3 + 2] + pos[c * 3 + 2]) / 3;
     const S = SLEEVES[mx < 0 ? 0 : 1];
+    if (neckHole(mx, my, mz) < 0.012) { groups[2].push([a, b, c, null]); continue; }
     const isSleeve = Math.abs(mx) > 0.55 && sleeveSD(mx, my, mz, S) < torsoSD(mx, my, mz, prof(my));
     groups[isSleeve ? 1 : 0].push([a, b, c, isSleeve ? S : null]);
   }
@@ -428,7 +436,7 @@ function meanderBand(ctx, side, mod) {
   ctx.strokeStyle = mod.trim; ctx.globalAlpha = 0.9;
   const pts = [];
   for (let x = -0.4; x <= 0.4001; x += tile) pts.push(x);
-  const yAt = (x) => (side === 'F' ? 0.99 : 1.05) + 0.62 * x * x;
+  const yAt = (x) => (side === 'F' ? 0.84 : 0.92) + 0.55 * x * x;
   pts.forEach((x) => {
     onShirt(ctx, side, x, yAt(x), (c) => {
       const s = tile * VPX;
@@ -465,11 +473,14 @@ function arcText(ctx, text, size, radius, fill, stroke) {
   });
 }
 
+let WEAVE = null;
 function weave(ctx, W, H, alpha) {
-  ctx.save();
-  ctx.globalAlpha = alpha; ctx.fillStyle = '#000';
-  for (let y = 0; y < H; y += 5) for (let x = (y / 5) % 2 ? 2.5 : 0; x < W; x += 5) ctx.fillRect(x, y, 1.6, 1.6);
-  ctx.restore();
+  if (!WEAVE) {
+    WEAVE = document.createElement('canvas'); WEAVE.width = 5; WEAVE.height = 10;
+    const x = WEAVE.getContext('2d'); x.fillStyle = '#000';
+    x.fillRect(0, 0, 1.6, 1.6); x.fillRect(2.5, 5, 1.6, 1.6);
+  }
+  ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = ctx.createPattern(WEAVE, 'repeat'); ctx.fillRect(0, 0, W, H); ctx.restore();
 }
 
 function drawTorso(ctx, mod, nome, numero) {
@@ -499,7 +510,7 @@ function drawTorso(ctx, mod, nome, numero) {
   });
 
   // COSTAS
-  onShirt(ctx, 'B', 0, 0.9, (c) => {
+  onShirt(ctx, 'B', 0, 0.8, (c) => {
     c.font = `700 ${0.042 * VPX}px Manrope, sans-serif`;
     c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = mod.trim;
     c.fillText('JESUS É O DONO DO LUGAR', 0, 0);
@@ -532,8 +543,8 @@ function drawSleeve(ctx, mod) {
   basePattern(ctx, SW, SH, mod, 29, true);
   // duas faixas douradas no topo da manga
   ctx.fillStyle = mod.trim;
-  ctx.fillRect(SW * 0.455, 0, SW * 0.022, SH * 0.88);
-  ctx.fillRect(SW * 0.523, 0, SW * 0.022, SH * 0.88);
+  ctx.fillRect(SW * 0.455, SH * 0.5, SW * 0.022, SH * 0.38);
+  ctx.fillRect(SW * 0.523, SH * 0.5, SW * 0.022, SH * 0.38);
   // punho
   ctx.fillStyle = mod.cuff || mod.trim;
   ctx.fillRect(0, SH * 0.885, SW, SH * 0.115);
@@ -541,15 +552,6 @@ function drawSleeve(ctx, mod) {
   ctx.fillRect(0, SH * 0.93, SW, SH * 0.012);
   ctx.globalAlpha = 1;
   weave(ctx, SW, SH, 0.05);
-}
-
-function marbleTexture(size = 512) {
-  const c = document.createElement('canvas');
-  c.width = c.height = size;
-  const x = c.getContext('2d');
-  x.fillStyle = '#f4f0ea'; x.fillRect(0, 0, size, size);
-  veins(x, size, size, 77, { vein: '#8a8276', veinGold: '#c39b4e', veinSoft: 'rgba(150,140,125,0.10)' }, 1.2);
-  return c;
 }
 
 function weaveBump() {
@@ -601,43 +603,29 @@ function sunsetEnvironment(renderer) {
 }
 
 // ---------------------------------------------------------------- cena
-export function initManto(canvas, { onSideChange } = {}) {
+export function initManto(canvas, { onSideChange, onDrag, reduced = false } = {}) {
   const isMobile = matchMedia('(max-width: 720px)').matches;
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.75 : 2));
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.92;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const scene = new THREE.Scene();
   scene.environment = sunsetEnvironment(renderer);
 
   const camera = new THREE.PerspectiveCamera(26, 1, 0.1, 60);
-  const target = new THREE.Vector3(0, -0.32, 0);
+  const target = new THREE.Vector3(0, -0.36, 0);
 
   scene.add(new THREE.HemisphereLight(0xfff4e2, 0x9c8c74, 0.42));
   const sun = new THREE.DirectionalLight(0xffd29a, 3.3);
   sun.position.set(-4, 5, 4.5);
-  sun.castShadow = true;
-  sun.shadow.mapSize.set(1024, 1024);
-  Object.assign(sun.shadow.camera, { left: -2.6, right: 2.6, top: 2.6, bottom: -2.6, near: 1, far: 16 });
-  sun.shadow.bias = -0.0004;
-  sun.shadow.normalBias = 0.02;
   scene.add(sun);
   const fill = new THREE.DirectionalLight(0xeaf0ff, 0.35); fill.position.set(4, 1, 3); scene.add(fill);
   const rim = new THREE.DirectionalLight(0xffe0aa, 1.4); rim.position.set(2.5, 3, -5); scene.add(rim);
 
   // materiais
-  const chrome = new THREE.MeshStandardMaterial({ color: 0xe4e4ea, metalness: 1, roughness: 0.08, envMapIntensity: 1.1 });
-  const gold = new THREE.MeshStandardMaterial({ color: 0xd7a94b, metalness: 1, roughness: 0.22, envMapIntensity: 1.2 });
-  const marbleTex = new THREE.CanvasTexture(marbleTexture());
-  marbleTex.colorSpace = THREE.SRGBColorSpace;
-  marbleTex.wrapS = marbleTex.wrapT = THREE.RepeatWrapping;
-  const marble = new THREE.MeshPhysicalMaterial({ map: marbleTex, roughness: 0.32, clearcoat: 0.35, clearcoatRoughness: 0.25, envMapIntensity: 0.35 });
-
   const tc = document.createElement('canvas'); tc.width = TW; tc.height = TH;
   const sc = document.createElement('canvas'); sc.width = SW; sc.height = SH;
   const tctx = tc.getContext('2d'), sctx = sc.getContext('2d');
@@ -671,52 +659,40 @@ export function initManto(canvas, { onSideChange } = {}) {
   }
   const torsoMat = fabric(torsoTex, bumpT);
   const sleeveMat = fabric(sleeveTex, bumpS);
-  const ribMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.7, sheen: 1, sheenColor: new THREE.Color(0xffffff) });
+  const ribMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.75, sheen: 0.8, sheenColor: new THREE.Color(0xffffff), envMapIntensity: 0.4 });
+  const innerMat = new THREE.MeshPhysicalMaterial({ color: 0xd9d4cb, roughness: 0.9, sheen: 0.4, sheenColor: new THREE.Color(0xffffff), envMapIntensity: 0.25 });
 
-  // rig que gira: camisa + manequim + haste
+  // rig que gira: camisa flutuando
   const rig = new THREE.Group();
   scene.add(rig);
 
-  // manequim cromado
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.145, 0.165, 0.46, 48), chrome);
-  neck.position.y = 1.32; rig.add(neck);
-  const neckCap = new THREE.Mesh(new THREE.CylinderGeometry(0.152, 0.152, 0.035, 48), gold);
-  neckCap.position.y = 1.565; rig.add(neckCap);
-  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.05, 24, 16), gold);
-  knob.position.y = 1.61; rig.add(knob);
-  SLEEVES.forEach((S) => {
-    const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.135, 0.36, 8, 32), chrome);
-    arm.position.copy(S.B).addScaledVector(S.d, 0.12);
-    arm.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), S.d);
-    arm.castShadow = true;
-    rig.add(arm);
-  });
-  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.72, 24), gold);
-  pole.position.y = -1.62; pole.castShadow = true; rig.add(pole);
-
-  // gola em ribana
-  const collar = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.038, 16, 64), ribMat);
-  collar.rotation.x = Math.PI / 2 + 0.28;
-  collar.scale.set(1, 0.9, 1);
-  collar.position.set(0, 1.155, 0.015);
+  // gola em ribana acompanhando o decote
+  const collar = new THREE.Mesh(new THREE.TorusGeometry(0.262, 0.03, 16, 72), ribMat);
+  collar.rotation.x = Math.PI / 2 + 0.22;
+  collar.scale.set(1.03, 0.86, 1);
+  collar.position.set(0, 1.035, 0.035);
   rig.add(collar);
 
-  // pedestal de mármore (fixo)
-  const ped = new THREE.Mesh(new THREE.CylinderGeometry(0.72, 0.76, 0.26, 72), marble);
-  ped.position.y = -2.11; ped.receiveShadow = true; scene.add(ped);
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.72, 0.014, 12, 96), gold);
-  ring.rotation.x = Math.PI / 2; ring.position.y = -1.98; scene.add(ring);
-  const ring2 = new THREE.Mesh(new THREE.TorusGeometry(0.76, 0.012, 12, 96), gold);
-  ring2.rotation.x = Math.PI / 2; ring2.position.y = -2.24; scene.add(ring2);
+  // sombra suave no chão (não gira)
+  const shc = document.createElement('canvas'); shc.width = shc.height = 256;
+  const shx = shc.getContext('2d');
+  const sg = shx.createRadialGradient(128, 128, 0, 128, 128, 128);
+  sg.addColorStop(0, 'rgba(60,44,24,0.55)'); sg.addColorStop(0.45, 'rgba(60,44,24,0.25)'); sg.addColorStop(1, 'rgba(60,44,24,0)');
+  shx.fillStyle = sg; shx.fillRect(0, 0, 256, 256);
+  const floorShadow = new THREE.Mesh(
+    new THREE.PlaneGeometry(1, 1),
+    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(shc), transparent: true, depthWrite: false, toneMapped: false })
+  );
+  floorShadow.rotation.x = -Math.PI / 2;
+  floorShadow.position.y = -2.08;
+  scene.add(floorShadow);
 
   let shirt = null;
   function buildShirt() {
     if (shirt) return;
     const geo = buildShirtGeometry(isMobile ? 0.032 : 0.024);
-    shirt = new THREE.Mesh(geo, [torsoMat, sleeveMat]);
-    shirt.castShadow = true;
+    shirt = new THREE.Mesh(geo, [torsoMat, sleeveMat, innerMat]);
     rig.add(shirt);
-    collar.material.color.set(state.modelo ? state.modelo.rib : '#ffffff');
   }
 
   let state = { modelo: null, nome: '', numero: '' };
@@ -726,6 +702,7 @@ export function initManto(canvas, { onSideChange } = {}) {
     drawSleeve(sctx, state.modelo);
     torsoTex.needsUpdate = true; sleeveTex.needsUpdate = true;
     ribMat.color.set(state.modelo.rib);
+    innerMat.color.set(state.modelo.base).multiplyScalar(0.82);
   }
 
   function resize() {
@@ -733,10 +710,10 @@ export function initManto(canvas, { onSideChange } = {}) {
     if (!w || !h) return;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    const needH = 4.15, needW = 3.75;
+    const needH = 3.95, needW = 3.45;
     const visH = 2 * Math.tan((camera.fov * Math.PI) / 360);
     const dist = Math.max(needH / visH, needW / (visH * camera.aspect));
-    camera.position.set(0, target.y + 0.35, dist);
+    camera.position.set(0, 1.55, dist);
     camera.lookAt(target);
     camera.updateProjectionMatrix();
   }
@@ -744,12 +721,12 @@ export function initManto(canvas, { onSideChange } = {}) {
   new ResizeObserver(resize).observe(canvas);
 
   // rotação por arrasto com inércia e encaixe em frente/costas
-  let rotY = -0.45, targetRot = 0, vel = 0, dragging = false, lastX = 0, tiltX = 0, tiltTarget = 0;
+  let rotY = -0.45, targetRot = 0, vel = 0, dragging = false, lastX = 0, tiltX = 0, tiltTarget = 0, dragged = 0, demoDone = false;
   let lastSide = 'front';
   const stage = canvas.parentElement;
   stage.addEventListener('pointerdown', (e) => {
     if (e.target.closest('button')) return;
-    dragging = true; lastX = e.clientX; vel = 0;
+    dragging = true; lastX = e.clientX; vel = 0; dragged = 0;
   });
   stage.addEventListener('pointermove', (e) => {
     const r = stage.getBoundingClientRect();
@@ -757,11 +734,15 @@ export function initManto(canvas, { onSideChange } = {}) {
     if (!dragging) return;
     const dx = e.clientX - lastX; lastX = e.clientX;
     rotY += dx * 0.011; vel = dx * 0.011;
+    dragged += Math.abs(dx);
+    if (dragged > 12 && onDrag) { onDrag(); onDrag = null; }
   });
   const end = () => {
     if (!dragging) return;
     dragging = false;
-    targetRot = Math.round((rotY + vel * 8) / Math.PI) * Math.PI;
+    // gesto rápido vira pro outro lado mesmo com arrasto curto
+    if (Math.abs(vel) > 0.04) targetRot = (vel > 0 ? Math.ceil(rotY / Math.PI + 0.001) : Math.floor(rotY / Math.PI - 0.001)) * Math.PI;
+    else targetRot = Math.round(rotY / Math.PI) * Math.PI;
   };
   window.addEventListener('pointerup', end);
   stage.addEventListener('pointercancel', end);
@@ -769,6 +750,12 @@ export function initManto(canvas, { onSideChange } = {}) {
 
   let visible = false;
   new IntersectionObserver(([en]) => { visible = en.isIntersecting; }, { rootMargin: '100px' }).observe(canvas);
+  // na primeira vez que a camisa aparece, ela gira sozinha e mostra as costas (nome e número)
+  new IntersectionObserver(([en], obs) => {
+    if (!en.isIntersecting || demoDone) return;
+    demoDone = true; obs.disconnect();
+    setTimeout(() => { if (!dragging && Math.abs(targetRot) < 0.01) targetRot = Math.PI; }, 900);
+  }, { threshold: 0.6 }).observe(canvas);
   // monta a malha antes da seção aparecer, sem travar o carregamento
   new IntersectionObserver(([en], obs) => {
     if (!en.isIntersecting) return;
@@ -781,11 +768,16 @@ export function initManto(canvas, { onSideChange } = {}) {
     requestAnimationFrame(tick);
     const dt = Math.min(clock.getDelta(), 0.05);
     if (!visible || !shirt) return;
-    uTime.value += dt;
+    if (!reduced) uTime.value += dt;
     if (!dragging) rotY += (targetRot - rotY) * Math.min(1, dt * 3);
     tiltX += (tiltTarget - tiltX) * Math.min(1, dt * 4);
-    rig.rotation.y = rotY + (dragging ? 0 : Math.sin(uTime.value * 0.5) * 0.07);
+    rig.rotation.y = rotY + (dragging || reduced ? 0 : Math.sin(uTime.value * 0.5) * 0.07);
     rig.rotation.x = tiltX * 0.5;
+    const bob = reduced ? 0 : Math.sin(uTime.value * 0.9) * 0.045;
+    rig.position.y = bob;
+    const facing = Math.abs(Math.cos(rig.rotation.y));
+    floorShadow.scale.set(lerp(1.15, 2.3, facing), lerp(0.75, 0.95, facing), 1);
+    floorShadow.material.opacity = 0.85 - bob * 2.5;
     const side = Math.cos(rotY) >= 0 ? 'front' : 'back';
     if (side !== lastSide) { lastSide = side; onSideChange?.(side); }
     renderer.render(scene, camera);

@@ -1,6 +1,6 @@
 // Hero: milhares de partículas douradas que formam a logo (coroa + cabide),
 // depois o número 10 e por fim a cruz. O mouse/dedo empurra as partículas.
-import * as THREE from 'three';
+import * as THREE from '../vendor/three.module.js';
 
 const SIZE = 512; // canvas de amostragem
 
@@ -21,18 +21,13 @@ function drawLogo(ctx) {
     ctx.beginPath(); ctx.arc(x, y - 6, 11, 0, Math.PI * 2); ctx.fill();
   });
   ctx.fillRect(146, 262, 220, 24);
-  // cabide
+  // cabide: braços saindo do centro da coroa e barra embaixo, igual à logo
   ctx.lineWidth = 15;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.beginPath();
-  ctx.moveTo(196, 300); ctx.lineTo(48, 412);
-  ctx.moveTo(316, 300); ctx.lineTo(464, 412);
+  ctx.moveTo(256, 300); ctx.lineTo(48, 430); ctx.lineTo(464, 430); ctx.closePath();
   ctx.stroke();
-  ctx.font = '400 54px Anton, Impact, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('RICARDO GOMES', 256, 440);
 }
 
 function drawNumber(ctx) {
@@ -45,14 +40,14 @@ function drawNumber(ctx) {
 
 function drawCross(ctx) {
   ctx.fillStyle = '#fff';
-  ctx.fillRect(228, 40, 56, 432);
+  ctx.fillRect(228, 40, 56, 340);
   ctx.fillRect(122, 140, 268, 56);
   // raios finos
   ctx.strokeStyle = '#fff';
   ctx.lineWidth = 3;
   for (let i = 0; i < 16; i++) {
     const a = (i / 16) * Math.PI * 2;
-    const r0 = 150, r1 = 230;
+    const r0 = 140, r1 = 200;
     ctx.beginPath();
     ctx.moveTo(256 + Math.cos(a) * r0, 168 + Math.sin(a) * r0);
     ctx.lineTo(256 + Math.cos(a) * r1, 168 + Math.sin(a) * r1);
@@ -97,6 +92,7 @@ const vertex = /* glsl */ `
   uniform vec2 uMouse;
   uniform float uMouseStr;
   uniform float uIntro;
+  uniform float uMotion;
   varying float vRand;
   varying float vAlpha;
 
@@ -111,15 +107,15 @@ const vertex = /* glsl */ `
 
     // explosão no meio da transição
     float burst = sin(t * 3.14159);
-    p += aDir * burst * (0.9 + aRand * 0.8);
+    p += aDir * burst * (0.9 + aRand * 0.8) * uMotion;
 
     // entrada: vem de longe espalhada
     p += aDir * (1.0 - uIntro) * (5.0 + aRand * 4.0);
 
     // respiração
-    p.x += sin(uTime * 0.9 + aRand * 40.0) * 0.018;
-    p.y += cos(uTime * 1.1 + aRand * 25.0) * 0.018;
-    p.z += sin(uTime * 0.7 + aRand * 12.0) * 0.04;
+    p.x += sin(uTime * 0.9 + aRand * 40.0) * 0.018 * uMotion;
+    p.y += cos(uTime * 1.1 + aRand * 25.0) * 0.018 * uMotion;
+    p.z += sin(uTime * 0.7 + aRand * 12.0) * 0.04 * uMotion;
 
     // mouse empurra
     vec2 d = p.xy - uMouse;
@@ -130,7 +126,7 @@ const vertex = /* glsl */ `
 
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     gl_Position = projectionMatrix * mv;
-    float twinkle = 0.65 + 0.35 * sin(uTime * (1.5 + aRand * 3.0) + aRand * 60.0);
+    float twinkle = 0.65 + 0.35 * mix(1.0, sin(uTime * (1.5 + aRand * 3.0) + aRand * 60.0), uMotion);
     gl_PointSize = uSize * (0.45 + aRand * 0.9) * uPR * (1.0 / -mv.z) * (1.0 + push * 0.8);
     vRand = aRand;
     vAlpha = twinkle * uIntro;
@@ -153,7 +149,7 @@ const fragment = /* glsl */ `
   }
 `;
 
-export function initHero(canvas) {
+export function initHero(canvas, { reduced = false } = {}) {
   const isMobile = matchMedia('(max-width: 720px)').matches;
   const COUNT = isMobile ? 9000 : 18000;
 
@@ -198,6 +194,7 @@ export function initHero(canvas) {
     uMouse: { value: new THREE.Vector2(99, 99) },
     uMouseStr: { value: 0 },
     uIntro: { value: 0 },
+    uMotion: { value: reduced ? 0 : 1 },
   };
 
   const mat = new THREE.ShaderMaterial({
@@ -277,11 +274,12 @@ export function initHero(canvas) {
   canvas.addEventListener('pointerleave', () => { pointerActive = false; });
 
   let running = true;
+  let started = false; // não desenha atrás do loader
   let morphTarget = 0;
   const clock = new THREE.Clock();
   function tick() {
     requestAnimationFrame(tick);
-    if (!running) return;
+    if (!running || !started) return;
     const dt = Math.min(clock.getDelta(), 0.05);
     uniforms.uTime.value += dt;
     uniforms.uMorph.value += (morphTarget - uniforms.uMorph.value) * Math.min(1, dt * 5);
@@ -290,7 +288,7 @@ export function initHero(canvas) {
     tilt.x += (ndc.y * 0.18 - tilt.x) * Math.min(1, dt * 3);
     tilt.y += (ndc.x * 0.28 - tilt.y) * Math.min(1, dt * 3);
     group.rotation.x = -tilt.x;
-    group.rotation.y = tilt.y + Math.sin(uniforms.uTime.value * 0.3) * 0.08;
+    group.rotation.y = tilt.y + Math.sin(uniforms.uTime.value * 0.3) * 0.08 * uniforms.uMotion.value;
     dust.rotation.y = uniforms.uTime.value * 0.015;
     dust.position.y = Math.sin(uniforms.uTime.value * 0.2) * 0.2;
     renderer.render(scene, camera);
@@ -300,7 +298,8 @@ export function initHero(canvas) {
   return {
     setMorph(v) { morphTarget = v; },
     intro(duration = 2.4) {
-      if (window.gsap) window.gsap.to(uniforms.uIntro, { value: 1, duration, ease: 'expo.out' });
+      started = true; clock.getDelta();
+      if (window.gsap && !reduced) window.gsap.to(uniforms.uIntro, { value: 1, duration, ease: 'expo.out' });
       else uniforms.uIntro.value = 1;
     },
     setRunning(v) { running = v; if (v) clock.getDelta(); },
