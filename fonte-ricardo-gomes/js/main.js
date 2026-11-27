@@ -5,6 +5,7 @@ import { initManto } from './manto.js';
 const { gsap, ScrollTrigger } = window;
 if (!gsap || !ScrollTrigger) throw new Error('GSAP não carregou'); // a trava do CSS abre o site
 gsap.registerPlugin(ScrollTrigger);
+ScrollTrigger.config({ ignoreMobileResize: true }); // barra de endereço do celular não recalcula as seções travadas
 document.documentElement.classList.add('js-ok');
 
 const $ = (s, el = document) => el.querySelector(s);
@@ -363,7 +364,7 @@ const FOTO_OK = /^img\/[\w-]+\.(jpe?g|png|webp|avif)$/;
       invalidateOnRefresh: true,
       onUpdate: (self) => {
         bar.style.transform = `scaleX(${self.progress})`;
-        head.style.opacity = mqMobile.matches ? '1' : String(Math.max(0, 1 - self.progress * 4));
+        head.style.opacity = mqMobile.matches ? '1' : String(Math.max(0, 1 - self.progress * 12));
       },
     },
   }).scrollTrigger;
@@ -526,7 +527,6 @@ window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menuIsOpen
 
 // ---------------- cursor ----------------
 if (finePointer) {
-  document.documentElement.classList.add('has-cursor');
   const cur = $('.cursor');
   const dot = $('.cursor__dot');
   const ring = $('.cursor__ring');
