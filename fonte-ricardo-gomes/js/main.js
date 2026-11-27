@@ -128,7 +128,7 @@ ScrollTrigger.create({
     b.setAttribute('aria-checked', i === 0 ? 'true' : 'false');
     b.setAttribute('aria-label', m.nome);
     b.dataset.hover = '';
-    b.innerHTML = `<i style="background:linear-gradient(135deg, ${m.base} 0 50%, ${m.trim} 50% 100%)"></i>`;
+    b.innerHTML = `<i style="background:${m.swatch || `linear-gradient(135deg, ${m.base} 0 50%, ${m.trim} 50% 100%)`}"></i>`;
     b.addEventListener('click', () => {
       modelo = m;
       $$('.swatch', sw).forEach((s) => s.setAttribute('aria-checked', 'false'));

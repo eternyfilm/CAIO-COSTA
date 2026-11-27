@@ -143,14 +143,13 @@ const fragment = /* glsl */ `
   void main() {
     vec2 c = gl_PointCoord - 0.5;
     float d = length(c);
-    float a = smoothstep(0.5, 0.0, d);
-    a *= a;
-    vec3 deep = vec3(0.54, 0.37, 0.11);
-    vec3 gold = vec3(0.83, 0.64, 0.25);
-    vec3 hi = vec3(1.0, 0.92, 0.70);
+    float a = smoothstep(0.5, 0.18, d);
+    vec3 deep = vec3(0.26, 0.17, 0.05);
+    vec3 gold = vec3(0.60, 0.42, 0.12);
+    vec3 hi = vec3(0.82, 0.63, 0.27);
     vec3 col = mix(deep, gold, smoothstep(0.0, 0.6, vRand));
-    col = mix(col, hi, smoothstep(0.82, 1.0, vRand));
-    gl_FragColor = vec4(col, a * vAlpha);
+    col = mix(col, hi, smoothstep(0.8, 1.0, vRand));
+    gl_FragColor = vec4(col, a * vAlpha * 0.95);
   }
 `;
 
@@ -194,7 +193,7 @@ export function initHero(canvas) {
   const uniforms = {
     uMorph: { value: 0 },
     uTime: { value: 0 },
-    uSize: { value: isMobile ? 30 : 34 },
+    uSize: { value: isMobile ? 22 : 25 },
     uPR: { value: pr },
     uMouse: { value: new THREE.Vector2(99, 99) },
     uMouseStr: { value: 0 },
@@ -207,7 +206,7 @@ export function initHero(canvas) {
     uniforms,
     transparent: true,
     depthWrite: false,
-    blending: THREE.AdditiveBlending,
+    blending: THREE.NormalBlending,
   });
 
   if (document.fonts && document.fonts.load) {
@@ -236,7 +235,7 @@ export function initHero(canvas) {
   const dustGeo = new THREE.BufferGeometry();
   dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
   const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({
-    color: 0xd4a440, size: 0.025, transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending,
+    color: 0xb8862b, size: 0.022, transparent: true, opacity: 0.45, depthWrite: false,
   }));
   scene.add(dust);
 

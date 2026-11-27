@@ -13,20 +13,20 @@ export function waLink(msg) {
 
 // Modelos do personalizador 3D
 export const MODELOS = [
-  { id: 'fonte', nome: 'Edição Fonte', base: '#0d0c0a', alt: '#17140f', trim: '#d4a440', num: '#e8c46a', numStroke: '#5a3e12', padrao: 'diagonal' },
-  { id: 'canarinho', nome: 'Canarinho', base: '#f6cf1d', alt: '#ecc312', trim: '#0f8a43', num: '#0b5a2e', numStroke: '#f6cf1d', padrao: 'faixas-sutis' },
-  { id: 'azulao', nome: 'Azulão', base: '#1c3d9e', alt: '#17348a', trim: '#f6cf1d', num: '#ffffff', numStroke: '#0f2466', padrao: 'gradiente' },
-  { id: 'rubronegro', nome: 'Rubro-negro', base: '#c8102e', alt: '#111111', trim: '#111111', num: '#ffffff', numStroke: '#111111', padrao: 'listras' },
-  { id: 'realeza', nome: 'Branco Real', base: '#f4f1ea', alt: '#e9e4d8', trim: '#c79a3c', num: '#c79a3c', numStroke: '#1b1b1b', padrao: 'gradiente' },
-  { id: 'esmeralda', nome: 'Esmeralda', base: '#0f4f52', alt: '#0b3e40', trim: '#ffffff', num: '#ffffff', numStroke: '#0b2c2d', padrao: 'geometrico' },
+  { id: 'marmore', nome: 'Mármore', base: '#f7f4ee', alt: '#ece7de', trim: '#c69a3e', rib: '#f3efe7', num: '#c69a3e', numStroke: '#4a3814', sponsor: '#9c9488', vein: '#7a7266', veinGold: '#c39b4e', veinSoft: 'rgba(140,130,115,0.12)', padrao: 'marmore', swatch: 'linear-gradient(135deg, #f7f4ee 0 55%, #c69a3e 55% 100%)' },
+  { id: 'canarinho', nome: 'Canarinho', base: '#f6cf1d', alt: '#ecc312', trim: '#0f8a43', rib: '#0f8a43', num: '#0b5a2e', numStroke: '#f6cf1d', sponsor: '#0b5a2e', padrao: 'faixas-sutis' },
+  { id: 'azulao', nome: 'Azulão', base: '#1f43a8', alt: '#173584', trim: '#f6cf1d', rib: '#f6cf1d', num: '#ffffff', numStroke: '#0f2466', sponsor: '#ffffff', padrao: 'gradiente' },
+  { id: 'rubronegro', nome: 'Rubro-negro', base: '#c8102e', alt: '#151515', trim: '#151515', rib: '#151515', num: '#ffffff', numStroke: '#151515', sponsor: '#ffffff', padrao: 'listras' },
+  { id: 'esmeralda', nome: 'Esmeralda', base: '#0f5a5c', alt: '#0c4a4c', trim: '#ffffff', rib: '#ffffff', num: '#ffffff', numStroke: '#0b2c2d', sponsor: '#ffffff', padrao: 'geometrico' },
+  { id: 'fonte', nome: 'Black Gold', base: '#151412', alt: '#1e1c18', trim: '#d4a440', rib: '#d4a440', num: '#e3bf68', numStroke: '#4a3410', sponsor: '#d4a440', padrao: 'diagonal' },
 ];
 
 // Categorias do scroll horizontal. Para usar foto real, preencha "foto" com o caminho (ex: 'img/kits.jpg').
 export const CATEGORIAS = [
-  { id: 'kits', tag: 'Mais pedido', titulo: 'Kits', texto: 'Camisa e short combinando. O uniforme do fim de semana.', icone: 'kit', foto: '', cor: '#16130d' },
-  { id: 'mantos', tag: 'Com seu nome', titulo: 'Mantos', texto: 'Seleção, clubes e temporada nova. Nome e número do jeito que você quiser.', icone: 'manto', foto: '', cor: '#0f1310' },
-  { id: 'tenis', tag: 'No pé', titulo: 'Tênis', texto: 'Os pares que tão no pé de todo mundo. E os que ainda vão estar.', icone: 'tenis', foto: '', cor: '#131012' },
-  { id: 'moletons', tag: 'Noite fria', titulo: 'Moletons', texto: 'Pra noite de Brasília, que esfria sem avisar.', icone: 'moletom', foto: '', cor: '#101114' },
-  { id: 'fe', tag: 'Fé', titulo: 'Frases', texto: 'Camisas com a Palavra estampada. Fé que se veste.', icone: 'frase', foto: '', cor: '#14110a' },
-  { id: 'infantil', tag: 'Pai e filho', titulo: 'Infantil', texto: 'O kit do seu filho igualzinho ao seu.', icone: 'infantil', foto: '', cor: '#0f1212' },
+  { id: 'kits', tag: 'Mais pedido', titulo: 'Kits', texto: 'Camisa e short combinando. O uniforme do fim de semana.', icone: 'kit', foto: '', cor: '#f1e9da' },
+  { id: 'mantos', tag: 'Com seu nome', titulo: 'Mantos', texto: 'Seleção, clubes e temporada nova. Nome e número do jeito que você quiser.', icone: 'manto', foto: '', cor: '#ebe8df' },
+  { id: 'tenis', tag: 'No pé', titulo: 'Tênis', texto: 'Os pares que tão no pé de todo mundo. E os que ainda vão estar.', icone: 'tenis', foto: '', cor: '#efe6e0' },
+  { id: 'moletons', tag: 'Noite fria', titulo: 'Moletons', texto: 'Pra noite de Brasília, que esfria sem avisar.', icone: 'moletom', foto: '', cor: '#e6e7e6' },
+  { id: 'fe', tag: 'Fé', titulo: 'Frases', texto: 'Camisas com a Palavra estampada. Fé que se veste.', icone: 'frase', foto: '', cor: '#f3e8d2' },
+  { id: 'infantil', tag: 'Pai e filho', titulo: 'Infantil', texto: 'O kit do seu filho igualzinho ao seu.', icone: 'infantil', foto: '', cor: '#e8ebe6' },
 ];
