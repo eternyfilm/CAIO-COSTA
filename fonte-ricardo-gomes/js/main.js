@@ -180,10 +180,11 @@ function radioGroup(container, items, onSelect) {
       reduced,
       onSideChange: (side) => { flipLabel.textContent = side === 'front' ? 'Ver costas' : 'Ver frente'; },
       onDrag: () => hint.classList.add('is-gone'),
+      onArtMove: () => { artPreset = ''; renderPresets(); update(); },
     });
   } catch (err) {
     console.warn('Prévia 3D desligada:', err);
-    api = { set: noop, showBack: noop, flip: noop, preload: noop };
+    api = { set: noop, showBack: noop, flip: noop, preload: noop, showSide: noop, setArt: noop, setMoving: noop, snapshot: () => Promise.resolve(null) };
     $('.manto__stage').classList.add('is-fallback');
     $('#mantoFlip').hidden = true;
     hint.textContent = 'Seu navegador não mostra a prévia 3D, mas o pedido funciona normal.';
@@ -242,7 +243,9 @@ function radioGroup(container, items, onSelect) {
     document.fonts?.load(`400 96px Anton`, nome || 'A').then(() => {});
     const nomeMsg = touched.nome ? (nome || 'sem nome') : 'quero definir no atendimento';
     const numMsg = touched.numero ? (numero || 'sem número') : 'quero definir no atendimento';
-    const msg = `Olá! Montei meu manto no site da Fonte.\n\nModelo: ${modelo.nome}\nNome: ${nomeMsg}\nNúmero: ${numMsg}\nTamanho: ${tamanho || 'a definir'}\n\nQual o valor e o prazo?`;
+    const artMsg = art ? `\nImagem: sim, ${art.side === 'front' ? 'na frente' : 'nas costas'}${artPreset ? ` (${PRESETS[art.side].find((p) => p.id === artPreset)?.nome.toLowerCase()})` : ''}. Vou mandar o arquivo aqui na conversa.` : '';
+    const msg = `Olá! Montei meu manto no site da Fonte.\n\nModelo: ${modelo.nome}\nNome: ${nomeMsg}\nNúmero: ${numMsg}\nTamanho: ${tamanho || 'a definir'}${artMsg}\n\nQual o valor e o prazo?`;
+    lastMsg = msg;
     try { cta.href = waLink(msg); } catch { /* texto inválido: mantém o link anterior */ }
   }
 
@@ -288,6 +291,160 @@ function radioGroup(container, items, onSelect) {
   }));
   $('#mantoFlip').addEventListener('click', () => api.flip());
   $('#mantoForm').addEventListener('submit', (e) => e.preventDefault());
+
+  // ---------- foto ou logo do cliente (processada só no aparelho) ----------
+  const PRESETS = {
+    front: [
+      { id: 'peito', nome: 'Peito', x: 0.5, y: 0.31, s: 0.34 },
+      { id: 'centro', nome: 'Centro', x: 0.5, y: 0.56, s: 0.4 },
+      { id: 'escudo', nome: 'Lado do escudo', x: 0.66, y: 0.25, s: 0.13 },
+    ],
+    back: [
+      { id: 'costas', nome: 'Costas inteira', x: 0.5, y: 0.5, s: 0.46 },
+      { id: 'baixo', nome: 'Abaixo do número', x: 0.5, y: 0.7, s: 0.3 },
+      { id: 'nuca', nome: 'Nuca', x: 0.5, y: 0.1, s: 0.14 },
+    ],
+  };
+  const fArt = $('#fArt'), artCtrl = $('#artCtrl'), artAdd = $('#artAdd'), artErr = $('#artError');
+  const artThumb = $('#artThumb'), artSize = $('#artSize'), artMove = $('#artMove'), artStatus = $('#artStatus');
+  const artPos = $('#artPos');
+  let art = null, artPreset = 'centro', artUrl = '';
+
+  function setError(msg) { artErr.textContent = msg; artErr.hidden = !msg; }
+  function applyArt() { api.setArt(art); update(); }
+
+  function renderPresets() {
+    artPos.textContent = '';
+    if (!art) return;
+    const btns = PRESETS[art.side].map((p) => {
+      const b = el('button', null, p.nome);
+      b.type = 'button'; b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', String(p.id === artPreset));
+      artPos.appendChild(b);
+      return b;
+    });
+    if (!btns.some((b) => b.getAttribute('aria-checked') === 'true')) btns[0].tabIndex = 0;
+    radioGroup(artPos, btns, (i) => {
+      const p = PRESETS[art.side][i];
+      artPreset = p.id;
+      Object.assign(art, { x: p.x, y: p.y, s: p.s });
+      artSize.value = Math.round(p.s * 100);
+      applyArt();
+    });
+  }
+
+  const sideBtns = $$('#artSide button');
+  radioGroup($('#artSide'), sideBtns, (i) => {
+    if (!art) return;
+    art.side = sideBtns[i].dataset.side;
+    const p = PRESETS[art.side][art.side === 'front' ? 1 : 0];
+    artPreset = p.id;
+    Object.assign(art, { x: p.x, y: p.y, s: p.s });
+    artSize.value = Math.round(p.s * 100);
+    renderPresets();
+    api.showSide(art.side);
+    applyArt();
+  });
+
+  // reduz pra no máximo 1400 px (memória) e mantém transparência do PNG/SVG
+  async function decode(file) {
+    const url = URL.createObjectURL(file);
+    try {
+      const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+      let w = img.naturalWidth || 1000, h = img.naturalHeight || 1000;
+      if (!w || !h) throw new Error('sem tamanho');
+      const k = Math.min(1, 1400 / Math.max(w, h));
+      const c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(w * k)); c.height = Math.max(1, Math.round(h * k));
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      return { canvas: c, url };
+    } catch (e) { URL.revokeObjectURL(url); throw e; }
+  }
+
+  fArt.addEventListener('change', async () => {
+    const file = fArt.files && fArt.files[0];
+    fArt.value = '';
+    if (!file) return;
+    setError('');
+    if (!/^image\/(png|jpeg|webp|svg\+xml)$/.test(file.type)) { setError('Esse formato não rola. Manda em PNG, JPG, WEBP ou SVG.'); return; }
+    if (file.size > 10 * 1024 * 1024) { setError('Arquivo maior que 10 MB. Manda uma versão menor.'); return; }
+    let d;
+    try { d = await decode(file); } catch { setError('Não consegui abrir essa imagem. Tenta salvar em PNG ou JPG.'); return; }
+    if (artUrl) URL.revokeObjectURL(artUrl);
+    artUrl = d.url;
+    const side = art ? art.side : 'front';
+    const p = PRESETS[side][side === 'front' ? 1 : 0];
+    art = { img: d.canvas, side, x: p.x, y: p.y, s: p.s, file };
+    artPreset = p.id;
+    artThumb.src = artUrl;
+    artSize.value = Math.round(p.s * 100);
+    artCtrl.hidden = false;
+    artAdd.querySelector('span').firstChild.textContent = 'Trocar imagem';
+    artStatus.textContent = file.name.length > 22 ? file.name.slice(0, 20) + '…' : file.name;
+    sideBtns.forEach((b) => b.setAttribute('aria-checked', String(b.dataset.side === side)));
+    renderPresets();
+    api.showSide(side);
+    applyArt();
+  });
+
+  artSize.addEventListener('input', () => {
+    if (!art) return;
+    art.s = Number(artSize.value) / 100;
+    api.setArt(art);
+  });
+  artSize.addEventListener('change', () => { artPreset = ''; renderPresets(); update(); });
+
+  artMove.addEventListener('click', () => {
+    const on = artMove.getAttribute('aria-pressed') !== 'true';
+    artMove.setAttribute('aria-pressed', String(on));
+    artMove.textContent = on ? 'Pronto, travar posição' : 'Arrastar na camisa';
+    if (on && art) api.showSide(art.side);
+    api.setMoving(on && !!art);
+    hint.classList.toggle('is-gone', on);
+  });
+
+  $('#artRemove').addEventListener('click', () => {
+    art = null; artPreset = 'centro';
+    if (artUrl) { URL.revokeObjectURL(artUrl); artUrl = ''; }
+    artCtrl.hidden = true; artThumb.removeAttribute('src');
+    artAdd.querySelector('span').firstChild.textContent = 'Adicionar foto ou vetor';
+    artStatus.textContent = 'opcional';
+    artMove.setAttribute('aria-pressed', 'false'); artMove.textContent = 'Arrastar na camisa';
+    api.setMoving(false);
+    applyArt();
+    artAdd.focus();
+  });
+
+  // com imagem: manda a prévia montada pro WhatsApp (compartilhar no celular, ou baixa + abre o Zap)
+  let lastMsg = '';
+  const canShareFiles = (() => {
+    try { return !!(navigator.canShare && navigator.canShare({ files: [new File(['x'], 't.jpg', { type: 'image/jpeg' })] })); } catch { return false; }
+  })();
+  cta.addEventListener('click', async (e) => {
+    if (!art) return;
+    if (canShareFiles) {
+      // celular: abre a folha de compartilhar com a prévia e o arquivo original
+      e.preventDefault();
+      try {
+        const blob = await api.snapshot();
+        const files = [];
+        if (blob) files.push(new File([blob], 'meu-manto-fonte.jpg', { type: 'image/jpeg' }));
+        if (art.file) files.push(art.file);
+        await navigator.share({ files, text: lastMsg });
+      } catch (err) {
+        if (err && err.name === 'AbortError') return; // a pessoa cancelou
+        location.href = cta.href;
+      }
+      return;
+    }
+    // computador: o link do Zap abre normal e a prévia é baixada pra anexar
+    api.snapshot().then((blob) => {
+      if (!blob) return;
+      const a = el('a'); a.href = URL.createObjectURL(blob); a.download = 'meu-manto-fonte.jpg';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    });
+  });
 
   document.fonts?.ready.then(update);
   updHint();

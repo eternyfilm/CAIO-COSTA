@@ -544,6 +544,34 @@ img, svg, canvas { display: block; }
 .btn-big { transition: color .4s; }
 .manto__note { margin: 0; font-size: 13px; color: var(--muted); max-width: 40ch; }
 
+/* foto ou logo do cliente */
+.art-add {
+  display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 16px;
+  border: 1.5px dashed rgba(23,20,16,.25); background: rgba(255,255,255,.5); cursor: pointer;
+  font-weight: 700; font-size: 15px; transition: border-color .25s, background-color .25s;
+}
+.art-add:hover, #fArt:focus-visible + .art-add { border-color: var(--gold-display); background: #fff; }
+#fArt:focus-visible + .art-add { outline: 2px solid var(--ink); outline-offset: 3px; }
+.art-add svg { width: 34px; height: 34px; padding: 7px; border-radius: 50%; background: var(--ink); color: var(--bg); flex-shrink: 0; }
+.art-add small { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--muted); }
+.art-error { margin: 0; font-size: 13px; font-weight: 600; color: #a3321f; }
+.art-ctrl { display: flex; flex-direction: column; gap: 14px; }
+.art-row { display: flex; align-items: center; gap: 14px; }
+.art-thumb { width: 56px; height: 56px; object-fit: contain; border-radius: 12px; border: 1px solid var(--line); background: repeating-conic-gradient(#eee 0 25%, #fff 0 50%) 0 0 / 12px 12px; }
+.art-side, .art-pos { display: flex; flex-wrap: wrap; gap: 8px; }
+.art-side button, .art-pos button {
+  height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line);
+  font-size: 13px; font-weight: 700; transition: background-color .25s, color .25s, border-color .25s;
+}
+.art-side button[aria-checked="true"], .art-pos button[aria-checked="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.art-size { display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.art-size input { flex: 1; accent-color: var(--gold-display); height: 32px; }
+.art-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.art-btn { height: 44px; padding: 0 18px; border-radius: 999px; background: var(--ink); color: var(--bg); font-size: 13px; font-weight: 700; }
+.art-btn[aria-pressed="true"] { background: var(--btn-grad); color: var(--ink); }
+.art-btn--ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.manto__stage.is-moving { cursor: move; touch-action: none; outline: 2px dashed var(--gold-display); outline-offset: -10px; }
+
 /* ================= DROPS ================= */
 .drops { position: relative; border-top: 1px solid var(--line); }
 .drops__pin {
@@ -789,3 +817,7 @@ img, svg, canvas { display: block; }
 
 /* background-clip:text só pinta dentro da caixa: abre espaço pros acentos */
 .hero__title .line > span.gold-text { padding-top: .22em; margin-top: -.22em; }
+
+/* o botão de enviar imagem não herda o estilo de rótulo do formulário */
+.field .art-add { text-transform: none; letter-spacing: 0; color: var(--ink); font-size: 15px; font-weight: 700; }
+.field .art-add small { text-transform: none; letter-spacing: 0; }

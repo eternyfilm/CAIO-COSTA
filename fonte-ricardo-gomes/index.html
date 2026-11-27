@@ -241,12 +241,37 @@
             </div>
           </div>
 
+          <div class="field" id="artField">
+            <span class="field__label">Foto ou logo <b id="artStatus">opcional</b></span>
+            <input class="sr-only" id="fArt" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" />
+            <label class="art-add" for="fArt" id="artAdd">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Adicionar foto ou vetor<small>PNG, JPG, WEBP ou SVG, até 10 MB. Fica só no seu aparelho.</small></span>
+            </label>
+            <p class="art-error" id="artError" role="alert" hidden></p>
+            <div class="art-ctrl" id="artCtrl" hidden>
+              <div class="art-row">
+                <img class="art-thumb" id="artThumb" alt="Prévia da imagem enviada" />
+                <div class="art-side" id="artSide" role="radiogroup" aria-label="Lado da imagem">
+                  <button type="button" role="radio" aria-checked="true" data-side="front">Frente</button>
+                  <button type="button" role="radio" aria-checked="false" data-side="back">Costas</button>
+                </div>
+              </div>
+              <div class="art-pos" id="artPos" role="radiogroup" aria-label="Posição da imagem"></div>
+              <label class="art-size">Tamanho <input id="artSize" type="range" min="8" max="80" value="40" /></label>
+              <div class="art-actions">
+                <button type="button" class="art-btn" id="artMove" aria-pressed="false">Arrastar na camisa</button>
+                <button type="button" class="art-btn art-btn--ghost" id="artRemove">Remover imagem</button>
+              </div>
+            </div>
+          </div>
+
           <a class="btn-big js-wa-manto" href="https://wa.me/5561983205214?text=Ol%C3%A1%21%20Montei%20meu%20manto%20no%20site%20da%20Fonte.%20Qual%20o%20valor%20e%20o%20prazo%3F" target="_blank" rel="noopener" data-magnetic>
             <span class="btn-big__fill"></span>
             <span class="btn-big__text">Pedir esse manto no Zap</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
-          <p class="manto__note">Prévia ilustrativa. Modelo, tamanho e acabamento você fecha direto com a gente no WhatsApp.</p>
+          <p class="manto__note">Prévia ilustrativa. Modelo, tamanho e acabamento você fecha direto com a gente no WhatsApp. Com foto ou logo, o botão já manda a prévia montada (no computador ela é baixada pra você anexar na conversa).</p>
         </form>
       </div>
     </section>

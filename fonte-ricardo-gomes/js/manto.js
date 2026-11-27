@@ -173,8 +173,20 @@ function drawBack(ctx, mod, box, nome, numero) {
   }
 }
 
+// imagem enviada pelo cliente (foto ou vetor), posição relativa à caixa da camisa
+function drawArt(ctx, art, box) {
+  if (!art || !art.img) return;
+  const { x0, y0, w, h } = box;
+  const dw = w * art.s;
+  const dh = dw * (art.img.height / art.img.width);
+  ctx.save();
+  ctx.translate(x0 + w * art.x, y0 + h * art.y);
+  ctx.drawImage(art.img, -dw / 2, -dh / 2, dw, dh);
+  ctx.restore();
+}
+
 // ---------- componente ----------
-export function initManto(stage, { onSideChange, onDrag, reduced = false } = {}) {
+export function initManto(stage, { onSideChange, onDrag, onArtMove, reduced = false } = {}) {
   const scene = document.createElement('div'); scene.className = 'mshirt';
   const card = document.createElement('div'); card.className = 'mshirt__card';
   const front = document.createElement('canvas'); front.className = 'mshirt__face mshirt__face--front';
@@ -201,8 +213,8 @@ export function initManto(stage, { onSideChange, onDrag, reduced = false } = {})
     return p;
   }
 
-  let state = { modelo: null, nome: '', numero: '' };
-  let drawnFront = '', job = 0;
+  let state = { modelo: null, nome: '', numero: '', art: null };
+  let drawnFront = '', job = 0, artVer = 0;
   async function redraw() {
     const mod = state.modelo; if (!mod) return;
     const my = ++job;
@@ -211,26 +223,51 @@ export function initManto(stage, { onSideChange, onDrag, reduced = false } = {})
     try { M = await getModel(mod); } catch { loading.textContent = 'Não deu pra carregar a foto da camisa.'; return; }
     if (my !== job) return;
     loading.classList.remove('is-on');
-    const changed = drawnFront !== mod.id;
-    if (changed) {
-      drawFront(printF.getContext('2d'), mod, M.front.box);
-      composite(M.front, printF, front, true);
-      drawnFront = mod.id;
+    const art = state.art;
+    const frontSig = mod.id + (art && art.side === 'front' ? ':' + artVer : '');
+    const changed = drawnFront.split(':')[0] !== mod.id;
+    if (frontSig !== drawnFront) {
+      const fx = printF.getContext('2d');
+      drawFront(fx, mod, M.front.box);
+      if (art && art.side === 'front') drawArt(fx, art, M.front.box);
+      composite(M.front, printF, front, changed);
+      drawnFront = frontSig;
     }
-    drawBack(printB.getContext('2d'), mod, M.back.box, state.nome, state.numero);
+    const bx = printB.getContext('2d');
+    drawBack(bx, mod, M.back.box, state.nome, state.numero);
+    if (art && art.side === 'back') drawArt(bx, art, M.back.box);
     composite(M.back, printB, back, changed);
+    boxes = { front: M.front.box, back: M.back.box };
   }
   let pending = 0;
-  const schedule = () => { clearTimeout(pending); pending = setTimeout(redraw, 60); };
+  const schedule = (ms = 60) => { clearTimeout(pending); pending = setTimeout(redraw, ms); };
 
   // ---------- rotação ----------
   let rotY = -0.5, target = 0, vel = 0, lastT = 0, dragging = false, lastX = 0, dragged = 0;
   let tiltX = 0, tiltY = 0, tX = 0, tY = 0, t = 0, demoDone = false, lastSide = 'front';
+  let boxes = null, moving = false, artDrag = null;
   stage.addEventListener('pointerdown', (e) => {
     if (e.button !== 0 || e.target.closest('button')) return;
+    if (moving && state.art) {
+      artDrag = { x: e.clientX, y: e.clientY, ax: state.art.x, ay: state.art.y };
+      try { stage.setPointerCapture(e.pointerId); } catch { /* ok */ }
+      e.preventDefault();
+      return;
+    }
     dragging = true; lastX = e.clientX; vel = 0; dragged = 0; lastT = performance.now();
     try { stage.setPointerCapture(e.pointerId); } catch { /* ok */ }
   });
+  stage.addEventListener('pointermove', (e) => {
+    if (!artDrag || !boxes || !state.art) return;
+    const box = boxes[state.art.side];
+    const k = W / card.clientWidth; // px da tela -> px da foto
+    state.art.x = Math.min(0.95, Math.max(0.05, artDrag.ax + ((e.clientX - artDrag.x) * k) / box.w));
+    state.art.y = Math.min(0.95, Math.max(0.05, artDrag.ay + ((e.clientY - artDrag.y) * k) / box.h));
+    artVer++; schedule(16);
+  });
+  const endArt = () => { if (artDrag) { artDrag = null; onArtMove?.(state.art); } };
+  stage.addEventListener('pointerup', endArt);
+  stage.addEventListener('pointercancel', endArt);
   stage.addEventListener('pointermove', (e) => {
     const r = stage.getBoundingClientRect();
     tX = ((e.clientY - r.top) / r.height - 0.5) * -10;
@@ -268,11 +305,12 @@ export function initManto(stage, { onSideChange, onDrag, reduced = false } = {})
     if (!visible) return;
     if (!reduced) t += dt;
     if (!dragging) rotY += (target - rotY) * Math.min(1, dt * (reduced ? 20 : 4));
-    tiltX += (tX - tiltX) * Math.min(1, dt * 5);
-    tiltY += (tY - tiltY) * Math.min(1, dt * 5);
+    const still = moving; // ajustando a imagem: camisa parada e de frente pro lado certo
+    tiltX += ((still ? 0 : tX) - tiltX) * Math.min(1, dt * 5);
+    tiltY += ((still ? 0 : tY) - tiltY) * Math.min(1, dt * 5);
     const deg = (rotY * 180) / Math.PI;
-    const bob = reduced ? 0 : Math.sin(t * 1.1) * 6;
-    const sway = reduced || dragging ? 0 : Math.sin(t * 0.6) * 2.5;
+    const bob = reduced || still ? 0 : Math.sin(t * 1.1) * 6;
+    const sway = reduced || dragging || still ? 0 : Math.sin(t * 0.6) * 2.5;
     card.style.transform = `translateY(${bob.toFixed(2)}px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${(deg + tiltY + sway).toFixed(2)}deg)`;
     const facing = Math.abs(Math.cos(rotY));
     card.style.setProperty('--lit', (0.84 + 0.16 * facing).toFixed(3));
@@ -294,6 +332,21 @@ export function initManto(stage, { onSideChange, onDrag, reduced = false } = {})
       if (Math.cos(target) > 0) target = (Math.round(rotY / Math.PI) + 1) * Math.PI;
     },
     flip() { target = (Math.round(rotY / Math.PI) + 1) * Math.PI; },
+    showSide(side) {
+      const k = Math.round(rotY / Math.PI);
+      const isBack = Math.abs(k % 2) === 1;
+      if ((side === 'back') !== isBack) target = (k + 1) * Math.PI; else target = k * Math.PI;
+    },
+    setArt(art) { state.art = art; artVer++; schedule(16); },
+    setMoving(v) { moving = v; stage.classList.toggle('is-moving', v); },
+    // prévia com frente e costas lado a lado, pra mandar no WhatsApp
+    snapshot() {
+      const c = document.createElement('canvas'); c.width = W * 2 + 120; c.height = H + 80;
+      const x = c.getContext('2d');
+      x.fillStyle = '#f5f1ea'; x.fillRect(0, 0, c.width, c.height);
+      x.drawImage(front, 40, 40); x.drawImage(back, W + 80, 40);
+      return new Promise((res) => c.toBlob(res, 'image/jpeg', 0.9));
+    },
     get side() { return lastSide; },
   };
 }
